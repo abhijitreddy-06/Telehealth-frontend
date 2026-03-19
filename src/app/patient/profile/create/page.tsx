@@ -139,17 +139,18 @@ export default function UserProfileCreatePage() {
         }
 
         const data = extractContractData<UserProfileResponse | null>(raw);
+        const loadedProfile = data?.profile;
 
-        if (!cancelled && data?.profile) {
+        if (!cancelled && loadedProfile) {
           setForm({
-            fullName: data.profile.fullName || "",
-            gender: data.profile.gender || "male",
-            customGender: data.profile.customGender || "",
-            dob: data.profile.dob ? String(data.profile.dob).slice(0, 10) : "",
-            weight: data.profile.weight ? String(data.profile.weight) : "70",
-            height: data.profile.height ? String(data.profile.height) : "170",
-            bloodGroup: data.profile.bloodGroup || "",
-            allergies: data.profile.allergies || "",
+            fullName: loadedProfile.fullName || "",
+            gender: loadedProfile.gender || "male",
+            customGender: loadedProfile.customGender || "",
+            dob: loadedProfile.dob ? String(loadedProfile.dob).slice(0, 10) : "",
+            weight: loadedProfile.weight ? String(loadedProfile.weight) : "70",
+            height: loadedProfile.height ? String(loadedProfile.height) : "170",
+            bloodGroup: loadedProfile.bloodGroup || "",
+            allergies: loadedProfile.allergies || "",
           });
         }
       } catch {

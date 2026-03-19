@@ -155,8 +155,8 @@ export default function DocSchedule() {
       .then(([profileRes, scheduleRes]) => {
         if (cancelled) return;
         setProfile(profileRes.profile);
-        setWeeklyState(hydrateWeeklyState(scheduleRes.data.weeklySchedule));
-        setOverrides(scheduleRes.data.overrides);
+        setWeeklyState(hydrateWeeklyState(scheduleRes.weeklySchedule));
+        setOverrides(scheduleRes.overrides);
       })
       .catch(() => {
         if (!cancelled) router.replace("/auth/doctor");
@@ -197,7 +197,7 @@ export default function DocSchedule() {
     try {
       setSavingSchedule(true);
       const res = await updateDoctorSchedule(payload);
-      setWeeklyState(hydrateWeeklyState(res.data));
+      setWeeklyState(hydrateWeeklyState(res));
       toast.success("Weekly schedule saved.");
     } catch (error) {
       const message = error instanceof Error ? error.message : "Failed to save schedule.";
@@ -232,8 +232,8 @@ export default function DocSchedule() {
       try {
         console.log("Refreshing schedule...");
         const refreshed = await getDoctorSchedule();
-        console.log("Refreshed schedule data:", refreshed.data);
-        setOverrides(refreshed.data.overrides);
+        console.log("Refreshed schedule data:", refreshed);
+        setOverrides(refreshed.overrides);
       } catch (refreshError) {
         console.warn("Refresh after add failed, using optimistic override entry:", refreshError);
         const optimisticId =

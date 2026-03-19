@@ -167,9 +167,14 @@ export function getAdminAppointments(params?: { page?: number; status?: string; 
 // --- Profile ---
 
 function normalizeUserProfile(profile: UserProfile | (Partial<UserProfile> & { fullName?: string })): UserProfile {
+  const fallbackFullName =
+    "fullName" in profile && typeof profile.fullName === "string"
+      ? profile.fullName.trim()
+      : "";
+
   const normalizedFullName =
     (typeof profile.full_name === "string" && profile.full_name.trim()) ||
-    (typeof profile.fullName === "string" && profile.fullName.trim()) ||
+    fallbackFullName ||
     "";
 
   return {
@@ -179,9 +184,14 @@ function normalizeUserProfile(profile: UserProfile | (Partial<UserProfile> & { f
 }
 
 function normalizeDoctorProfile(profile: DoctorProfile | (Partial<DoctorProfile> & { fullName?: string })): DoctorProfile {
+  const fallbackFullName =
+    "fullName" in profile && typeof profile.fullName === "string"
+      ? profile.fullName.trim()
+      : "";
+
   const normalizedFullName =
     (typeof profile.full_name === "string" && profile.full_name.trim()) ||
-    (typeof profile.fullName === "string" && profile.fullName.trim()) ||
+    fallbackFullName ||
     "";
 
   return {

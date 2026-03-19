@@ -100,12 +100,14 @@ export default function DoctorProfilePage() {
         }
 
         const data = extractContractData<DoctorProfileResponse | null>(raw);
-        if (!cancelled && !data?.profile) {
+        const loadedProfile = data?.profile;
+
+        if (!cancelled && !loadedProfile) {
           router.replace("/doctor/profile/create");
           return;
         }
 
-        if (!cancelled) setProfile(data.profile);
+        if (!cancelled && loadedProfile) setProfile(loadedProfile);
       } catch {
         if (!cancelled) router.replace("/auth/doctor");
       } finally {

@@ -128,23 +128,25 @@ export default function EditUserProfilePage() {
         }
 
         const data = extractContractData<UserProfileResponse | null>(raw);
-        if (!cancelled && !data?.profile) {
+        const loadedProfile = data?.profile;
+
+        if (!cancelled && !loadedProfile) {
           router.replace("/patient/profile/create");
           return;
         }
 
-        if (!cancelled && data.profile) {
+        if (!cancelled && loadedProfile) {
           const normalizedProfile: UserProfileData = {
-            ...data.profile,
-            customGender: typeof data.profile.customGender === "string" ? data.profile.customGender : "",
+            ...loadedProfile,
+            customGender: typeof loadedProfile.customGender === "string" ? loadedProfile.customGender : "",
           };
 
           setProfile(normalizedProfile);
           // Ensure dob is in YYYY-MM-DD format for the date input
           const profileData = {
             ...normalizedProfile,
-            dob: data.profile.dob
-              ? data.profile.dob.split("T")[0] || data.profile.dob
+            dob: loadedProfile.dob
+              ? loadedProfile.dob.split("T")[0] || loadedProfile.dob
               : "",
           };
           setFormData(profileData);

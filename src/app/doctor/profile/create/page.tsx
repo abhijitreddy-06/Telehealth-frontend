@@ -129,15 +129,16 @@ export default function DoctorProfileCreatePage() {
         }
 
         const data = extractContractData<DoctorProfileResponse | null>(raw);
+        const loadedProfile = data?.profile;
 
-        if (!cancelled && data?.profile) {
+        if (!cancelled && loadedProfile) {
           setForm({
-            fullName: data.profile.fullName || "",
-            specialization: data.profile.specialization || "",
-            experience: data.profile.experience ? String(data.profile.experience) : "",
-            qualification: data.profile.qualification || "",
-            hospital: data.profile.hospital || "",
-            bio: data.profile.bio || "",
+            fullName: loadedProfile.fullName || "",
+            specialization: loadedProfile.specialization || "",
+            experience: loadedProfile.experience ? String(loadedProfile.experience) : "",
+            qualification: loadedProfile.qualification || "",
+            hospital: loadedProfile.hospital || "",
+            bio: loadedProfile.bio || "",
           });
         }
       } catch {
