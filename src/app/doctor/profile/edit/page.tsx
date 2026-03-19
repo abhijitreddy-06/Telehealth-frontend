@@ -134,14 +134,16 @@ export default function EditDoctorProfilePage() {
         }
 
         const data = extractContractData<DoctorProfileResponse | null>(raw);
-        if (!cancelled && !data?.profile) {
+        const loadedProfile = data?.profile;
+
+        if (!cancelled && !loadedProfile) {
           router.replace("/doctor/profile/create");
           return;
         }
 
-        if (!cancelled && data?.profile) {
-          setProfile(data.profile);
-          setFormData(data.profile);
+        if (!cancelled && loadedProfile) {
+          setProfile(loadedProfile);
+          setFormData(loadedProfile);
         }
       } catch {
         if (!cancelled) router.replace("/auth/doctor");
