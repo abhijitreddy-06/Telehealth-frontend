@@ -88,9 +88,9 @@
   --ring: var(--primary);
   --chart-1: var(--primary);
   --chart-2: var(--accent);
-  --chart-3: #60a5fa;
-  --chart-4: #5eead4;
-  --chart-5: #cbd5e1;
+  --chart-3: var(--primary-hover);
+  --chart-4: var(--accent-hover);
+  --chart-5: var(--text-muted);
   --radius: 0.75rem;
   --sidebar: var(--bg-secondary);
   --sidebar-foreground: var(--text-primary);
@@ -115,9 +115,11 @@
   --primary: #3b82f6;
   --primary-hover: #2563eb;
   --primary-light: #1e3a8a;
+  --primary-border: #60a5fa;
 
   --accent: #2dd4bf;
   --accent-hover: #14b8a6;
+  --accent-light: #134e4a;
 
   --success: #22c55e;
   --warning: #fbbf24;
@@ -139,9 +141,9 @@
   --ring: var(--primary);
   --chart-1: var(--primary);
   --chart-2: var(--accent);
-  --chart-3: #60a5fa;
-  --chart-4: #5eead4;
-  --chart-5: #64748b;
+  --chart-3: var(--primary-hover);
+  --chart-4: var(--accent-hover);
+  --chart-5: var(--text-muted);
   --sidebar: var(--bg-secondary);
   --sidebar-foreground: var(--text-primary);
   --sidebar-primary: var(--primary);
@@ -152,7 +154,81 @@
   --sidebar-ring: var(--primary);
 }
 
-/* Compatibility layer: remap common hardcoded slate utility classes in dark mode */
+/* Compatibility layer: remap common utility classes to design tokens */
+.bg-slate-50,
+.bg-slate-100,
+.bg-gray-50,
+.bg-zinc-50,
+.bg-stone-50 {
+  background-color: var(--bg-main) !important;
+}
+
+.bg-slate-200,
+.bg-slate-300,
+.bg-slate-400,
+.bg-gray-200,
+.bg-zinc-200,
+.bg-stone-200 {
+  background-color: var(--bg-secondary) !important;
+}
+
+.bg-slate-800,
+.bg-slate-900,
+.bg-slate-950,
+.bg-gray-800,
+.bg-zinc-800,
+.bg-stone-800,
+.bg-white,
+.bg-white\/95,
+.bg-white\/90,
+.bg-white\/85,
+.bg-white\/80,
+.bg-white\/70 {
+  background-color: var(--card) !important;
+}
+
+.text-slate-900,
+.text-slate-800,
+.text-slate-100,
+.text-slate-50,
+.text-gray-900,
+.text-zinc-900,
+.text-white {
+  color: var(--text-primary) !important;
+}
+
+.text-slate-700,
+.text-slate-600,
+.text-slate-500,
+.text-slate-400,
+.text-slate-300,
+.text-gray-700,
+.text-zinc-700,
+.text-stone-700 {
+  color: var(--text-secondary) !important;
+}
+
+.text-slate-200,
+.text-gray-400,
+.text-zinc-400,
+.text-stone-400 {
+  color: var(--text-muted) !important;
+}
+
+.border-slate-100,
+.border-slate-200,
+.border-slate-300,
+.border-slate-400,
+.border-slate-500,
+.border-slate-600,
+.border-slate-700,
+.border-slate-800,
+.border-gray-200,
+.border-zinc-200,
+.border-stone-200 {
+  border-color: var(--border) !important;
+}
+
 .dark .bg-slate-950 {
   background-color: var(--bg-main) !important;
 }
@@ -174,88 +250,148 @@
   background-color: var(--bg-secondary) !important;
 }
 
-.dark .bg-white,
-.dark .bg-white\/95,
-.dark .bg-white\/90,
-.dark .bg-white\/85,
-.dark .bg-white\/80,
-.dark .bg-white\/70 {
-  background-color: color-mix(in srgb, var(--card) 88%, transparent) !important;
-}
-
-.dark .text-slate-100,
-.dark .text-white,
-.dark .text-slate-50 {
-  color: var(--text-primary) !important;
-}
-
-.dark .text-slate-400,
-.dark .text-slate-300,
-.dark .text-slate-500,
-.dark .text-slate-600,
-.dark .text-slate-700 {
-  color: var(--text-secondary) !important;
-}
-
-.dark .text-slate-800,
-.dark .text-slate-900 {
-  color: var(--text-primary) !important;
-}
-
-.dark .border-slate-700,
-.dark .border-slate-800,
-.dark .border-slate-600,
-.dark .border-slate-500,
-.dark .border-slate-300,
-.dark .border-slate-200 {
-  border-color: var(--border) !important;
-}
-
 /* Map existing utility accent colors to design tokens */
 .text-sky-500,
 .text-sky-600,
 .text-sky-700,
 .text-sky-400,
-.text-sky-300 {
+.text-sky-300,
+.text-blue-500,
+.text-blue-600,
+.text-blue-700,
+.text-blue-400,
+.text-blue-300 {
   color: var(--primary) !important;
 }
 
 .bg-sky-500,
 .bg-sky-600,
-.bg-sky-700 {
+.bg-sky-700,
+.bg-blue-500,
+.bg-blue-600,
+.bg-blue-700 {
   background-color: var(--primary) !important;
 }
 
 .hover\:bg-sky-50:hover,
-.bg-sky-50 {
+.hover\:bg-blue-50:hover,
+.bg-sky-50,
+.bg-blue-50,
+.bg-sky-100,
+.bg-blue-100,
+.bg-sky-900\/50 {
   background-color: var(--primary-light) !important;
 }
 
 .border-sky-100,
 .border-sky-200,
-.border-sky-300 {
+.border-sky-300,
+.border-blue-100,
+.border-blue-200,
+.border-blue-300,
+.border-sky-700 {
   border-color: var(--primary-border) !important;
 }
 
 .text-emerald-500,
-.text-emerald-400 {
+.text-emerald-400,
+.text-emerald-600,
+.text-emerald-700 {
   color: var(--success) !important;
 }
 
+.bg-emerald-50,
+.bg-emerald-100,
+.bg-emerald-500\/10,
+.bg-emerald-900\/20 {
+  background-color: color-mix(in srgb, var(--success) 16%, transparent) !important;
+}
+
+.border-emerald-200,
+.border-emerald-300,
+.border-emerald-500\/40,
+.border-emerald-800 {
+  border-color: color-mix(in srgb, var(--success) 48%, transparent) !important;
+}
+
+.text-teal-500,
+.text-teal-600,
+.text-teal-700,
+.text-violet-500,
+.text-violet-400 {
+  color: var(--accent) !important;
+}
+
+.bg-teal-50,
+.bg-teal-100 {
+  background-color: var(--accent-light) !important;
+}
+
 .text-amber-500,
-.text-amber-400 {
+.text-amber-400,
+.text-amber-300,
+.text-amber-600,
+.text-amber-700 {
   color: var(--warning) !important;
+}
+
+.bg-amber-50,
+.bg-amber-100,
+.bg-amber-500\/10,
+.bg-amber-900\/20 {
+  background-color: color-mix(in srgb, var(--warning) 16%, transparent) !important;
+}
+
+.border-amber-200,
+.border-amber-300,
+.border-amber-500\/40,
+.border-amber-700,
+.border-amber-700\/60 {
+  border-color: color-mix(in srgb, var(--warning) 48%, transparent) !important;
 }
 
 .text-red-500,
 .text-red-400,
-.text-red-300 {
+.text-red-300,
+.text-red-600,
+.text-red-700 {
   color: var(--error) !important;
 }
 
-.text-violet-500,
-.text-violet-400 {
-  color: var(--accent) !important;
+.bg-red-50,
+.bg-red-100,
+.bg-red-500\/10,
+.bg-red-900\/20 {
+  background-color: color-mix(in srgb, var(--error) 14%, transparent) !important;
+}
+
+.border-red-200,
+.border-red-300,
+.border-red-500\/40,
+.border-red-800 {
+  border-color: color-mix(in srgb, var(--error) 44%, transparent) !important;
+}
+
+.hover\:bg-slate-50:hover,
+.hover\:bg-slate-100:hover,
+.hover\:bg-slate-800:hover,
+.hover\:bg-slate-900:hover {
+  background-color: var(--bg-secondary) !important;
+}
+
+.hover\:bg-sky-600:hover,
+.hover\:bg-sky-700:hover,
+.hover\:bg-blue-600:hover,
+.hover\:bg-blue-700:hover {
+  background-color: var(--primary-hover) !important;
+}
+
+.hover\:text-sky-500:hover,
+.hover\:text-sky-600:hover,
+.hover\:text-sky-300:hover,
+.hover\:text-blue-500:hover,
+.hover\:text-blue-600:hover {
+  color: var(--primary) !important;
 }
 
 .dark .shadow-slate-950\/30,
@@ -273,6 +409,36 @@
     @apply bg-background text-foreground;
     font-size: 17px;
     line-height: 1.6;
+  }
+  section {
+    color: var(--text-primary);
+  }
+  h1,
+  h2,
+  h3 {
+    color: var(--text-primary);
+  }
+  p,
+  label {
+    color: var(--text-secondary);
+  }
+  small,
+  .text-muted,
+  [data-muted="true"] {
+    color: var(--text-muted);
+  }
+  input,
+  textarea,
+  select {
+    background-color: var(--card);
+    border-color: var(--border);
+    color: var(--text-primary);
+  }
+  input:focus,
+  textarea:focus,
+  select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent);
   }
   html {
     @apply font-sans;
@@ -330,7 +496,7 @@
   overflow: hidden;
   border: 2px solid var(--primary);
   color: var(--primary);
-  background: white;
+  background: var(--card);
   z-index: 0;
   transition: color 300ms ease-in-out;
 }
@@ -345,7 +511,7 @@
   z-index: -1;
 }
 .btn-fill:hover {
-  color: white;
+  color: var(--primary-foreground);
 }
 .btn-fill:hover::before {
   transform: scaleX(1);
@@ -389,19 +555,11 @@
 
 /* White gradient overlay for content sections — keeps text readable */
 .content-overlay {
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.95),
-    rgba(255, 255, 255, 0.98)
-  );
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--card) 95%, transparent), var(--card));
 }
 
 .dark .content-overlay {
-  background: linear-gradient(
-    to bottom,
-    rgba(33, 33, 33, 0.92),
-    rgba(23, 23, 23, 0.96)
-  );
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--card) 92%, transparent), var(--card));
 }
 
 /* Hide browser-native password reveal/clear controls to avoid duplicate eye icons */

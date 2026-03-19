@@ -21,9 +21,7 @@ export default function Navbar() {
     const initialTheme: "light" | "dark" =
       savedTheme === "dark" || savedTheme === "light"
         ? savedTheme
-        : window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light";
+        : "light";
 
     document.documentElement.classList.toggle("dark", initialTheme === "dark");
     localStorage.setItem("theme", initialTheme);
@@ -38,15 +36,15 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-slate-200/60 bg-white/90 backdrop-blur-xl dark:border-border dark:bg-(--bg-main)">
+    <nav className="sticky top-0 z-50 w-full border-b border-border bg-card backdrop-blur-xl dark:bg-background">
       <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-6">
         {/* Logo */}
         <Link href="/" className="group flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-sky-500 transition-transform duration-300 group-hover:scale-110">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary transition-transform duration-300 group-hover:scale-110">
             <Stethoscope className="h-4.5 w-4.5 text-white" />
           </div>
-          <span className="font-logo text-[22px] font-semibold tracking-tight text-slate-900 dark:text-foreground">
-            Tele<span className="text-sky-500">Health</span>
+          <span className="font-logo text-[22px] font-semibold tracking-tight text-foreground">
+            Tele<span className="text-primary">Health</span>
           </span>
         </Link>
 
@@ -56,7 +54,7 @@ export default function Navbar() {
             <li key={link.href}>
               <Link
                 href={link.href}
-                className="relative text-[15px] font-medium text-slate-600 transition-colors duration-200 hover:text-sky-600 after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 after:rounded-full after:bg-sky-500 after:transition-all after:duration-200 hover:after:w-full dark:text-muted-foreground dark:hover:text-sky-300"
+                className="relative text-[15px] font-medium text-muted-foreground transition-colors duration-200 hover:text-primary after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 after:rounded-full after:bg-primary after:transition-all after:duration-200 hover:after:w-full"
               >
                 {link.label}
               </Link>
@@ -69,7 +67,7 @@ export default function Navbar() {
           <button
             type="button"
             onClick={toggleTheme}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 bg-white/80 text-slate-700 transition hover:bg-slate-100 dark:border-border dark:bg-card dark:text-foreground dark:hover:bg-secondary"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition hover:bg-secondary"
             aria-label="Toggle theme"
             title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
           >
@@ -87,13 +85,13 @@ export default function Navbar() {
           <button
             type="button"
             onClick={toggleTheme}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 bg-white/80 text-slate-700 transition hover:bg-slate-100 dark:border-border dark:bg-card dark:text-foreground dark:hover:bg-secondary"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition hover:bg-secondary"
             aria-label="Toggle theme"
           >
             {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
           <button
-            className="rounded-lg p-2 text-slate-700 transition-colors hover:bg-slate-100 dark:text-muted-foreground dark:hover:bg-card"
+            className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-secondary"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle menu"
           >
@@ -110,7 +108,7 @@ export default function Navbar() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="overflow-hidden border-t border-slate-100 bg-white dark:border-border dark:bg-(--bg-secondary) md:hidden"
+            className="overflow-hidden border-t border-border bg-card md:hidden"
           >
             <div className="flex flex-col gap-1 px-6 py-4">
               {navLinks.map((link) => (
@@ -118,13 +116,13 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="rounded-lg px-4 py-3 text-[15px] font-medium text-slate-700 transition-colors hover:bg-sky-50 hover:text-sky-600 dark:text-foreground dark:hover:bg-card dark:hover:text-sky-300"
+                  className="rounded-lg px-4 py-3 text-[15px] font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
                 >
                   {link.label}
                 </Link>
               ))}
               <Link href="/auth" onClick={() => setMobileOpen(false)}>
-                <Button className="mt-2 w-full rounded-full bg-sky-500 py-5 font-semibold text-white shadow-md shadow-sky-500/20">
+                <Button className="mt-2 w-full rounded-full bg-primary py-5 font-semibold text-primary-foreground shadow-md">
                   Get Started
                 </Button>
               </Link>

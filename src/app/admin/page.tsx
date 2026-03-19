@@ -45,9 +45,7 @@ export default function AdminDashboardPage() {
     const initial: "light" | "dark" =
       saved === "light" || saved === "dark"
         ? saved
-        : window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light";
+        : "light";
 
     document.documentElement.classList.toggle("dark", initial === "dark");
     localStorage.setItem("theme", initial);

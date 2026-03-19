@@ -112,11 +112,11 @@ export default function DashboardLayout({
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="flex min-h-screen bg-background">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/20 backdrop-blur-sm md:hidden"
+          className="fixed inset-0 z-30 bg-background/60 backdrop-blur-sm md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -124,22 +124,22 @@ export default function DashboardLayout({
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-slate-200 bg-white transition-transform duration-300 dark:border-slate-800 dark:bg-slate-900 md:translate-x-0",
+          "fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-border bg-card transition-transform duration-300 md:translate-x-0",
           sidebarOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
         {/* Logo */}
-        <div className="flex h-20 items-center justify-between border-b border-slate-100 px-6 dark:border-slate-800">
+        <div className="flex h-20 items-center justify-between border-b border-border px-6">
           <Link href="/" className="flex items-center gap-2">
-            <Stethoscope className="h-6 w-6 text-sky-500" />
+            <Stethoscope className="h-6 w-6 text-primary" />
             <span className="text-xl font-bold">
-              <span className="bg-linear-to-r from-sky-500 to-sky-700 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-primary to-accent bg-clip-text text-transparent">
                 TeleHealth
               </span>
             </span>
           </Link>
           <button
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 md:hidden"
+            className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary md:hidden"
             onClick={() => setSidebarOpen(false)}
           >
             <X className="h-5 w-5" />
@@ -159,14 +159,14 @@ export default function DashboardLayout({
                 className={cn(
                   "flex items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-medium transition-colors",
                   isActive
-                    ? "bg-sky-50 text-sky-700 dark:bg-sky-500/15 dark:text-sky-300"
-                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100",
+                    ? "bg-secondary text-primary"
+                    : "text-muted-foreground hover:bg-secondary hover:text-foreground",
                 )}
               >
                 <Icon
                   className={cn(
                     "h-5 w-5",
-                    isActive ? "text-sky-500" : "",
+                    isActive ? "text-primary" : "",
                   )}
                 />
                 {item.label}
@@ -176,10 +176,10 @@ export default function DashboardLayout({
         </nav>
 
         {/* Sign Out */}
-        <div className="border-t border-slate-100 p-4 dark:border-slate-800">
+        <div className="border-t border-border p-4">
           <Button
             variant="ghost"
-            className="w-full justify-start text-slate-600 hover:bg-red-50 hover:text-red-500 dark:text-slate-300 dark:hover:bg-red-500/15 dark:hover:text-red-300"
+            className="w-full justify-start text-muted-foreground hover:bg-red-50 hover:text-red-500"
             onClick={async () => {
               try {
                 await fetch(
@@ -200,15 +200,15 @@ export default function DashboardLayout({
       {/* Main content */}
       <main className="flex min-h-screen flex-1 flex-col md:ml-64">
         {/* Header */}
-        <header className="fixed inset-x-0 top-0 z-50 flex h-20 items-center justify-between border-b border-slate-200/50 bg-white/70 px-4 backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/70 md:left-64 md:px-8">
+        <header className="fixed inset-x-0 top-0 z-50 flex h-20 items-center justify-between border-b border-border bg-card/90 px-4 backdrop-blur-md md:left-64 md:px-8">
           <div className="flex items-center gap-3">
             <button
-              className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 md:hidden"
+              className="rounded-lg p-2 text-muted-foreground hover:bg-secondary md:hidden"
               onClick={() => setSidebarOpen(true)}
             >
               <Menu className="h-5 w-5" />
             </button>
-            <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100 sm:text-2xl">
+            <h1 className="text-lg font-semibold text-foreground sm:text-2xl">
               {headerGreeting}
             </h1>
           </div>
@@ -218,7 +218,7 @@ export default function DashboardLayout({
                 type="button"
                 variant="outline"
                 onClick={onToggleTheme}
-                className="h-10 w-10 rounded-full border-slate-300 bg-white/80 p-0 text-slate-700 backdrop-blur hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800"
+                className="h-10 w-10 rounded-full border-border bg-card p-0 text-muted-foreground backdrop-blur hover:bg-secondary"
                 aria-label="Toggle theme"
                 title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
               >
@@ -233,7 +233,7 @@ export default function DashboardLayout({
               <button
                 type="button"
                 onClick={() => setProfileMenuOpen((prev) => !prev)}
-                className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white/90 p-1 pr-2 shadow-sm transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800"
+                className="flex items-center gap-1.5 rounded-full border border-border bg-card p-1 pr-2 shadow-sm transition hover:bg-secondary"
                 aria-haspopup="menu"
                 aria-expanded={profileMenuOpen}
                 aria-label="Open profile menu"
@@ -241,16 +241,16 @@ export default function DashboardLayout({
                 <span
                   className={cn(
                     "flex h-8 w-8 items-center justify-center rounded-full text-[14px] font-bold",
-                    "bg-sky-100 text-sky-700 dark:bg-sky-500/20 dark:text-sky-300",
+                    "bg-secondary text-primary",
                   )}
                 >
                   {displayInitial}
                 </span>
-                <ChevronDown className={cn("h-4 w-4 text-slate-500 transition", profileMenuOpen && "rotate-180")} />
+                <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition", profileMenuOpen && "rotate-180")} />
               </button>
 
               {profileMenuOpen && profileLinks.length > 0 && (
-                <div className="absolute right-0 z-30 mt-2 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white py-1.5 shadow-lg dark:border-slate-700 dark:bg-slate-900">
+                <div className="absolute right-0 z-30 mt-2 w-52 overflow-hidden rounded-xl border border-border bg-card py-1.5 shadow-lg">
                   {profileLinks.map((item) => {
                     const Icon = item.icon;
                     return (
@@ -261,8 +261,8 @@ export default function DashboardLayout({
                         className={cn(
                           "mx-1 flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition",
                           pathname === item.href
-                            ? "bg-sky-50 text-sky-700 dark:bg-sky-500/15 dark:text-sky-300"
-                            : "text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800",
+                            ? "bg-secondary text-primary"
+                            : "text-muted-foreground hover:bg-secondary hover:text-foreground",
                         )}
                       >
                         <Icon className="h-4 w-4" />

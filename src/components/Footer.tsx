@@ -3,23 +3,23 @@ import { Github, Linkedin, Stethoscope } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-slate-200 bg-white px-[5%] py-3 dark:border-border dark:bg-(--bg-main)">
+    <footer className="border-t border-border bg-card px-[5%] py-3">
       <div className="mx-auto grid max-w-350 grid-cols-[auto_1fr_auto] items-center gap-3 max-md:flex max-md:flex-col max-md:gap-1.5">
         <div className="flex items-center">
-          <Link href="/patient/home" className="flex items-center gap-2 text-sky-500">
-            <Stethoscope className="h-5 w-5 text-sky-500" />
+          <Link href="/patient/home" className="flex items-center gap-2 text-primary">
+            <Stethoscope className="h-5 w-5 text-primary" />
             <span className="text-[16px] font-semibold">TeleHealth</span>
           </Link>
         </div>
 
         <div className="text-center">
-          <span className="text-sm text-slate-700 dark:text-muted-foreground">
+          <span className="text-sm text-muted-foreground">
             &copy; {new Date().getFullYear()} Built by{" "}
             <a
               href="https://abhijitreddy-portfolio.netlify.app/"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-semibold text-slate-800 hover:underline dark:text-foreground"
+              className="font-semibold text-foreground hover:underline"
             >
               Abhijit Reddy
             </a>
@@ -27,13 +27,13 @@ export default function Footer() {
           </span>
         </div>
 
-        <div className="flex justify-end gap-3 text-slate-700 max-md:justify-center dark:text-muted-foreground">
+        <div className="flex justify-end gap-3 text-muted-foreground max-md:justify-center">
           <a
             href="https://www.linkedin.com/in/abhijitreddy75"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn"
-            className="transition hover:text-sky-500"
+            className="transition hover:text-primary"
           >
             <Linkedin className="h-5 w-5" />
           </a>
@@ -42,7 +42,7 @@ export default function Footer() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub"
-            className="transition hover:text-sky-500"
+            className="transition hover:text-primary"
           >
             <Github className="h-5 w-5" />
           </a>

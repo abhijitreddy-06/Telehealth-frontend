@@ -134,9 +134,7 @@ export default function RecordsPage() {
     const initialTheme: "light" | "dark" =
       savedTheme === "dark" || savedTheme === "light"
         ? savedTheme
-        : window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light";
+        : "light";
 
     document.documentElement.classList.toggle("dark", initialTheme === "dark");
     localStorage.setItem("theme", initialTheme);
