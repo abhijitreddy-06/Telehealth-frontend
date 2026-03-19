@@ -139,7 +139,7 @@ export default function EditDoctorProfilePage() {
           return;
         }
 
-        if (!cancelled && data.profile) {
+        if (!cancelled && data?.profile) {
           setProfile(data.profile);
           setFormData(data.profile);
         }
