@@ -138,7 +138,7 @@ export default function DocHome() {
             Your <span className="bg-linear-to-r from-sky-500 to-sky-700 bg-clip-text text-transparent">Virtual Healthcare</span> Solution
           </h2>
           <p className="mt-4 text-[15px] leading-relaxed text-slate-600 dark:text-slate-300">
-            Access top healthcare services from anywhere. TeleHealth helps doctors connect, consult, and manage care
+            Access top healthcare services from anywhere. TeleHealthx helps doctors connect, consult, and manage care
             efficiently.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
@@ -154,8 +154,8 @@ export default function DocHome() {
 
         <div className="overflow-hidden rounded-2xl border border-slate-200 shadow-md dark:border-slate-700">
           <img
-            src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=900&h=620"
-            alt="TeleHealth virtual consultation"
+            src="/images/care-virtual.svg"
+            alt="TeleHealthx virtual consultation"
             className="h-full w-full object-cover"
           />
         </div>
@@ -224,7 +224,7 @@ export default function DocHome() {
 
         <div className="overflow-hidden rounded-2xl border border-slate-200 shadow-md dark:border-slate-700">
           <img
-            src="https://images.unsplash.com/photo-1584432810601-6c7f27d2362b?auto=format&fit=crop&w=900&h=620"
+            src="/images/care-appointment.svg"
             alt="Appointment booking"
             className="h-full w-full object-cover"
           />

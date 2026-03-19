@@ -1,10 +1,10 @@
-# TeleHealth Frontend (Next.js)
+# TeleHealthx Frontend (Next.js)
 
 This app owns all UI routes. Backend requests are proxied through Next rewrites.
 
 ## Environment
 
-Copy [telehealth-frontend/.env.example](.env.example) to `.env.local` for local development.
+Copy [TeleHealthx frontend/.env.example](.env.example) to `.env.local` for local development.
 
 - `NEXT_SERVER_API_URL`: server-side rewrite target. Required in staging/production.
 - `NEXT_PUBLIC_API_URL`: optional browser-side base URL. Default behavior in code uses `/backend`.

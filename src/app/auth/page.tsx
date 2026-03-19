@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import RoleCard from "@/components/RoleCard";
 import { motion } from "framer-motion";
+import Logo from "@/components/Logo";
 
 export default function AuthPage() {
   return (
@@ -19,6 +20,9 @@ export default function AuthPage() {
         className="content-overlay flex flex-1 flex-col items-center justify-center px-6 py-20"
       >
         <div className="mb-10 text-center">
+          <div className="mb-5 flex justify-center">
+            <Logo size="lg" />
+          </div>
           <h1 className="font-heading text-[36px] font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-[40px]">
             Get Started
           </h1>

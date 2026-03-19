@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Stethoscope, Menu, Moon, Sun, X } from "lucide-react";
+import { Menu, Moon, Sun, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Logo from "@/components/Logo";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -40,12 +41,7 @@ export default function Navbar() {
       <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-6">
         {/* Logo */}
         <Link href="/" className="group flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary transition-transform duration-300 group-hover:scale-110">
-            <Stethoscope className="h-4.5 w-4.5 text-white" />
-          </div>
-          <span className="font-logo text-[22px] font-semibold tracking-tight text-foreground">
-            Tele<span className="text-primary">Health</span>
-          </span>
+          <Logo className="transition-transform duration-300 group-hover:scale-[1.02]" />
         </Link>
 
         {/* Desktop links */}

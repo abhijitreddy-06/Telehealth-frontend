@@ -27,6 +27,7 @@ import { extractContractData, extractContractMessage, isContractFailure } from "
 import { toast } from "sonner";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "/backend";
+const PHARMACY_FALLBACK_IMAGE = "/images/medical-pattern.png";
 
 const patientNav: NavItem[] = [
   { href: "/patient/home", label: "Home", icon: Activity },
@@ -352,7 +353,7 @@ export default function PharmacyPage() {
         className="rounded-2xl border border-slate-200 bg-white p-7 shadow-sm dark:border-slate-700 dark:bg-slate-900"
       >
         <h1 className="bg-linear-to-r from-sky-500 to-emerald-500 bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:text-4xl">
-          TeleHealth Pharmacy
+          TeleHealthx Pharmacy
         </h1>
         <p className="mt-2 text-[15px] text-slate-500 dark:text-slate-300">
           Browse our wide range of medicines, health products, and medical devices.
@@ -492,13 +493,13 @@ export default function PharmacyPage() {
                   >
                     <div className="relative h-44 w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
                       <img
-                        src={product.image_url || "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400"}
+                        src={product.image_url || PHARMACY_FALLBACK_IMAGE}
                         alt={product.name}
                         className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                         loading="lazy"
                         onError={(event) => {
                           const target = event.currentTarget;
-                          target.src = "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400";
+                          target.src = PHARMACY_FALLBACK_IMAGE;
                         }}
                       />
                       {product.prescription_required && (

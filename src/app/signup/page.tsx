@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Stethoscope, ArrowRight, UserPlus, FileText } from "lucide-react";
+import { UserPlus, FileText } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Suspense } from 'react';
+import Logo from "@/components/Logo";
 
 function SignupForm() {
   const searchParams = useSearchParams();
@@ -239,11 +240,8 @@ export default function SignupPage() {
         transition={{ duration: 0.4 }}
         className="sm:mx-auto sm:w-full sm:max-w-md relative z-10"
       >
-        <Link href="/" className="flex justify-center items-center gap-3 mb-6 cursor-pointer hover:opacity-80 transition-opacity group">
-          <Stethoscope className="w-12 h-12 text-emerald-500 group-hover:rotate-12 transition-transform duration-300" />
-          <span className="text-4xl font-extrabold bg-linear-to-r from-sky-600 to-sky-800 bg-clip-text text-transparent">
-            TeleHealth
-          </span>
+        <Link href="/" className="mb-6 flex cursor-pointer items-center justify-center gap-3 transition-opacity hover:opacity-80">
+          <Logo size="lg" />
         </Link>
         <h2 className="mt-4 text-center text-4xl font-extrabold text-slate-900 tracking-tight">
           Join us today

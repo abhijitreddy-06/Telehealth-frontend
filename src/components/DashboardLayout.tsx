@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import {
-  Stethoscope,
   Calendar,
   LogOut,
   Menu,
@@ -21,6 +20,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import Logo from "@/components/Logo";
 
 export interface NavItem {
   href: string;
@@ -137,12 +137,7 @@ export default function DashboardLayout({
         {/* Logo */}
         <div className="flex h-20 items-center justify-between border-b border-border px-6">
           <Link href="/" className="flex items-center gap-2">
-            <Stethoscope className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold">
-              <span className="bg-linear-to-r from-primary to-accent bg-clip-text text-transparent">
-                TeleHealth
-              </span>
-            </span>
+            <Logo />
           </Link>
           <button
             className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary md:hidden"

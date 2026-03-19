@@ -117,7 +117,7 @@ export default function AdminDashboardPage() {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className={theme === "dark" ? "text-xs uppercase tracking-[0.14em] text-muted-foreground" : "text-xs uppercase tracking-[0.14em] text-slate-500"}>
-                TeleHealth Administration
+                TeleHealthx Administration
               </p>
               <h1 className={theme === "dark" ? "mt-1 text-2xl font-semibold text-foreground" : "mt-1 text-2xl font-semibold text-slate-900"}>
                 Admin Dashboard

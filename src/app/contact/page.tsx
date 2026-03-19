@@ -31,7 +31,7 @@ const contactInfo = [
   {
     icon: Mail,
     label: "Email Us",
-    value: "support@telehealth.com",
+    value: "support@telehealthx.com",
   },
 ];
 
@@ -219,7 +219,7 @@ export default function ContactPage() {
       <section className="content-overlay px-6 pb-16">
         <div className="mx-auto max-w-5xl overflow-hidden rounded-2xl border border-slate-200/80 shadow-sm dark:border-slate-700">
           <iframe
-            title="TeleHealth Location"
+            title="TeleHealthx Location"
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.9663095343037!2d-73.99026868459423!3d40.74076797932784!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259a9b3117469%3A0xd134e199a405a163!2sEmpire%20State%20Building!5e0!3m2!1sen!2sus!4v1680000000000!5m2!1sen!2sus"
             width="100%"
             height="400"

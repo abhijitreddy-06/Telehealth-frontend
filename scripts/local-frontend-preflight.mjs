@@ -37,7 +37,7 @@ function checkNodeModules() {
   if (!fs.existsSync(nodeModulesPath)) {
     return {
       ok: false,
-      message: 'Missing node_modules. Run "npm install" in telehealth-frontend before starting frontend.',
+      message: 'Missing node_modules. Run "npm install" in TeleHealthx frontend before starting frontend.',
     };
   }
   return { ok: true };
@@ -115,7 +115,7 @@ async function main() {
 
   if (!portAvailable) {
     console.error(`[preflight:frontend] Port ${DEFAULT_PORT} is already in use.`);
-    console.error('[preflight:frontend] Tip: stop existing Next dev process or run "npm run local:free-port" in telehealth-frontend.');
+    console.error('[preflight:frontend] Tip: stop existing Next dev process or run "npm run local:free-port" in TeleHealthx frontend.');
     process.exit(1);
   }
 

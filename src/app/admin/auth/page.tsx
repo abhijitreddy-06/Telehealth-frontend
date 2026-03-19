@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { adminLogin } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Logo from "@/components/Logo";
 
 export default function AdminAuthPage() {
   const router = useRouter();
@@ -69,6 +70,9 @@ export default function AdminAuthPage() {
       <div className="mx-auto flex min-h-screen w-full max-w-6xl items-center justify-center px-4 py-8">
         <div className={cardClass}>
           <div className="mb-6 text-center">
+            <div className="mb-4 flex justify-center">
+              <Logo size="lg" />
+            </div>
             <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-sky-500/15 text-sky-400">
               <ShieldCheck className="h-6 w-6" />
             </div>

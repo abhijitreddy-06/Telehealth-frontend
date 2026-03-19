@@ -125,7 +125,7 @@ export default function PatientHomePage() {
             Your <span className="bg-linear-to-r from-sky-500 to-sky-700 bg-clip-text text-transparent">Virtual Healthcare</span> Solution
           </h2>
           <p className="mt-4 text-[15px] leading-relaxed text-slate-600 dark:text-slate-300">
-            Access top healthcare professionals from the comfort of your home. TeleHealth makes healthcare
+            Access top healthcare professionals from the comfort of your home. TeleHealthx makes healthcare
             accessible, affordable, and convenient.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
@@ -148,7 +148,7 @@ export default function PatientHomePage() {
 
         <div className="overflow-hidden rounded-2xl border border-slate-200 shadow-md dark:border-slate-700">
           <img
-            src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=900&h=620"
+            src="/images/care-virtual.svg"
             alt="Virtual consultation"
             className="h-full w-full object-cover"
           />
@@ -218,7 +218,7 @@ export default function PatientHomePage() {
 
         <div className="overflow-hidden rounded-2xl border border-slate-200 shadow-md dark:border-slate-700">
           <img
-            src="https://images.unsplash.com/photo-1584432810601-6c7f27d2362b?auto=format&fit=crop&w=900&h=620"
+            src="/images/care-appointment.svg"
             alt="Appointment booking"
             className="h-full w-full object-cover"
           />

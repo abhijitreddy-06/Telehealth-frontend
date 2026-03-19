@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Github, Linkedin, Stethoscope } from "lucide-react";
+import { Github, Linkedin } from "lucide-react";
+import Logo from "@/components/Logo";
 
 export default function Footer() {
   return (
@@ -7,8 +8,7 @@ export default function Footer() {
       <div className="mx-auto grid max-w-350 grid-cols-[auto_1fr_auto] items-center gap-3 max-md:flex max-md:flex-col max-md:gap-1.5">
         <div className="flex items-center">
           <Link href="/patient/home" className="flex items-center gap-2 text-primary">
-            <Stethoscope className="h-5 w-5 text-primary" />
-            <span className="text-[16px] font-semibold">TeleHealth</span>
+            <Logo size="sm" />
           </Link>
         </div>
 

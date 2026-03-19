@@ -21,7 +21,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "TeleHealth - Virtual Healthcare Solutions",
+  title: "TeleHealthx - Virtual Healthcare Solutions",
   description:
     "Modern healthcare, anytime. Book appointments and consult doctors online with secure video consultations.",
 };

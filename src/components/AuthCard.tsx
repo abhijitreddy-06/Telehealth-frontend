@@ -180,7 +180,7 @@ export default function AuthCard({ role }: AuthCardProps) {
               </h2>
               <p className="mt-3 text-[14px] leading-relaxed text-sky-100">
                 {isLogin
-                  ? "Login to continue your telehealth journey."
+                  ? "Login to continue your TeleHealthx journey."
                   : "Join our platform to connect with certified doctors."}
               </p>
             </motion.div>

@@ -72,7 +72,7 @@ const testimonials = [
   {
     name: "Sarah M.",
     role: "Patient",
-    quote: "TeleHealth made it incredibly easy to see a specialist without leaving my home!",
+    quote: "TeleHealthx made it incredibly easy to see a specialist without leaving my home!",
     rating: 5,
   },
   {
@@ -107,7 +107,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="mb-14 text-center">
             <span className="mb-3 inline-block text-[13px] font-bold uppercase tracking-wider text-sky-600">
-              Why TeleHealth
+              Why TeleHealthx
             </span>
             <h2 className="font-heading text-[36px] font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-[40px]">
               Everything you need for modern healthcare

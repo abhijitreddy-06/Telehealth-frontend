@@ -29,6 +29,8 @@ const patientNav: NavItem[] = [
   { href: "/predict", label: "AI Pre Advice", icon: Stethoscope },
 ];
 
+const PHARMACY_FALLBACK_IMAGE = "/images/medical-pattern.png";
+
 export default function PharmacyProductPage() {
   const params = useParams<{ slug: string }>();
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -106,11 +108,11 @@ export default function PharmacyProductPage() {
             <div className="grid gap-6 lg:grid-cols-2">
               <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-100 dark:border-slate-700 dark:bg-slate-800">
                 <img
-                  src={product.image_url || "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=900"}
+                  src={product.image_url || PHARMACY_FALLBACK_IMAGE}
                   alt={product.name}
                   className="h-72 w-full object-cover"
                   onError={(event) => {
-                    event.currentTarget.src = "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=900";
+                    event.currentTarget.src = PHARMACY_FALLBACK_IMAGE;
                   }}
                 />
               </div>

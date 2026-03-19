@@ -30,6 +30,8 @@ const patientNav: NavItem[] = [
   { href: "/predict", label: "AI Pre Advice", icon: Stethoscope },
 ];
 
+const PHARMACY_FALLBACK_IMAGE = "/images/medical-pattern.png";
+
 export default function PharmacyWishlistPage() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [items, setItems] = useState<WishlistProduct[]>([]);
@@ -99,11 +101,11 @@ export default function PharmacyWishlistPage() {
                 <div className="flex items-center justify-between gap-4">
                   <Link href={`/pharmacy/product/${item.slug}`} className="group flex min-w-0 flex-1 items-center gap-3 rounded-xl p-1 hover:bg-slate-50 dark:hover:bg-slate-800">
                     <img
-                      src={item.image_url || "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400"}
+                      src={item.image_url || PHARMACY_FALLBACK_IMAGE}
                       alt={item.name}
                       className="h-14 w-14 rounded-lg object-cover"
                       onError={(event) => {
-                        event.currentTarget.src = "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400";
+                        event.currentTarget.src = PHARMACY_FALLBACK_IMAGE;
                       }}
                     />
                     <div className="min-w-0">
