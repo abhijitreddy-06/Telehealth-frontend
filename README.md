@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TeleHealth Frontend (Next.js)
+
+This app owns all UI routes. Backend requests are proxied through Next rewrites.
+
+## Environment
+
+Copy [telehealth-frontend/.env.example](.env.example) to `.env.local` for local development.
+
+- `NEXT_SERVER_API_URL`: server-side rewrite target. Required in staging/production.
+- `NEXT_PUBLIC_API_URL`: optional browser-side base URL. Default behavior in code uses `/backend`.
+
+For full environment matrix and startup guardrails, see [docs/phase-0-baseline.md](../docs/phase-0-baseline.md).
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Local Stability Flow
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Use this when running with backend in parallel:
 
-## Learn More
+1. Terminal 1 (backend, project root):
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run local:backend
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Terminal 2 (frontend):
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run local:dev
+```
 
-## Deploy on Vercel
+If port 3000 is occupied:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run local:free-port
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Local smoke checklist:
+
+1. Login works.
+2. Session refresh works.
+3. Core dashboard loads.
+4. One appointment flow works.
+5. One file upload/download flow works.
+
+## API Boundary Rules
+
+- UI navigation stays in Next App Router pages.
+- Backend API is consumed under `/api/*` and `/backend/*` rewrite paths.
+- Auth/session endpoints use `/api/auth/*`.
