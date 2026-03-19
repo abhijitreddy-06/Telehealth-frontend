@@ -1,7 +1,18 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:10000";
+const isProduction = process.env.NODE_ENV === "production";
+const configuredBackend = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_SERVER_API_URL;
+
+if (isProduction && !configuredBackend) {
+  throw new Error("Missing backend API URL in production. Set NEXT_PUBLIC_API_URL or NEXT_SERVER_API_URL.");
+}
+
+if (isProduction && configuredBackend && configuredBackend.startsWith("http://")) {
+  throw new Error("In production, backend API URL must use HTTPS.");
+}
+
+const BACKEND_URL = (configuredBackend || "http://localhost:10000").replace(/\/$/, "");
 const SESSION_FETCH_TIMEOUT_MS = 3500;
 
 const publicOnlyPaths = ["/", "/services", "/contact", "/auth", "/signup"];

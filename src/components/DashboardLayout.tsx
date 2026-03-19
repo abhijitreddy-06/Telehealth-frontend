@@ -60,10 +60,16 @@ export default function DashboardLayout({
   const normalizedNameWithoutTitle = normalizedName.replace(/^(dr\.?|doctor)\s+/i, "").trim();
   const firstName = (normalizedNameWithoutTitle || normalizedName).split(/\s+/)[0] || normalizedName;
   const displayName = firstName.charAt(0).toUpperCase() + firstName.slice(1);
-  const currentHour = new Date().getHours();
-  const doctorTimeGreeting = currentHour < 12
+  const indiaHour = Number(
+    new Intl.DateTimeFormat("en-IN", {
+      hour: "2-digit",
+      hour12: false,
+      timeZone: "Asia/Kolkata",
+    }).format(new Date()),
+  );
+  const doctorTimeGreeting = indiaHour < 12
     ? "Good Morning"
-    : currentHour < 17
+    : indiaHour < 17
       ? "Good Afternoon"
       : "Good Evening";
   const headerGreeting = role === "doctor"
@@ -157,10 +163,10 @@ export default function DashboardLayout({
                 href={item.href}
                 onClick={() => setSidebarOpen(false)}
                 className={cn(
-                  "flex items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-medium transition-colors",
+                  "menu-item flex items-center gap-3 text-[15px] font-medium transition-colors",
                   isActive
                     ? "bg-secondary text-primary"
-                    : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 <Icon
@@ -218,7 +224,7 @@ export default function DashboardLayout({
                 type="button"
                 variant="outline"
                 onClick={onToggleTheme}
-                className="h-10 w-10 rounded-full border-border bg-card p-0 text-muted-foreground backdrop-blur hover:bg-secondary"
+                className="h-10 w-10 rounded-md border-border bg-card p-0 text-muted-foreground backdrop-blur hover:bg-secondary"
                 aria-label="Toggle theme"
                 title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
               >
@@ -233,7 +239,7 @@ export default function DashboardLayout({
               <button
                 type="button"
                 onClick={() => setProfileMenuOpen((prev) => !prev)}
-                className="flex items-center gap-1.5 rounded-full border border-border bg-card p-1 pr-2 shadow-sm transition hover:bg-secondary"
+                className="flex items-center gap-1.5 rounded-lg border border-border bg-card p-1 pr-2 shadow-sm transition hover:bg-secondary"
                 aria-haspopup="menu"
                 aria-expanded={profileMenuOpen}
                 aria-label="Open profile menu"
@@ -250,7 +256,7 @@ export default function DashboardLayout({
               </button>
 
               {profileMenuOpen && profileLinks.length > 0 && (
-                <div className="absolute right-0 z-30 mt-2 w-52 overflow-hidden rounded-xl border border-border bg-card py-1.5 shadow-lg">
+                <div className="absolute right-0 z-30 mt-2 w-52 overflow-hidden rounded-[10px] border border-border bg-card py-1.5 shadow-lg">
                   {profileLinks.map((item) => {
                     const Icon = item.icon;
                     return (
@@ -259,10 +265,10 @@ export default function DashboardLayout({
                         href={item.href}
                         onClick={() => setProfileMenuOpen(false)}
                         className={cn(
-                          "mx-1 flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition",
+                          "dropdown-item mx-1 flex items-center gap-2.5 text-sm transition",
                           pathname === item.href
                             ? "bg-secondary text-primary"
-                            : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+                            : "text-muted-foreground hover:text-foreground",
                         )}
                       >
                         <Icon className="h-4 w-4" />

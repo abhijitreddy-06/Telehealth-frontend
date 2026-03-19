@@ -25,7 +25,7 @@ export default function HeroSection() {
           transition={{ duration: 0.6 }}
           className="flex max-w-xl flex-1 flex-col items-start"
         >
-          <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-(--primary-border) bg-secondary px-4 py-1.5 text-[13px] font-semibold text-primary">
+          <span className="mb-5 inline-flex items-center gap-2 rounded-md border border-(--primary-border) bg-secondary px-4 py-1.5 text-[13px] font-semibold text-primary">
             <span className="h-2 w-2 animate-pulse rounded-full bg-primary" />
             Trusted by 10,000+ patients
           </span>
@@ -43,13 +43,13 @@ export default function HeroSection() {
 
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Link href="/auth">
-              <Button className="group h-13 rounded-full bg-primary px-7 text-[16px] font-semibold text-primary-foreground shadow-lg transition-all duration-250 hover:-translate-y-0.5 hover:scale-[1.02] hover:bg-(--primary-hover) active:translate-y-0 active:scale-100">
+              <Button className="group h-13 rounded-lg bg-primary px-7 text-[16px] font-semibold text-primary-foreground shadow-lg transition-all duration-250 hover:-translate-y-0.5 hover:bg-(--primary-hover) active:translate-y-0 active:scale-100">
                 Book Appointment
                 <ArrowRight className="ml-2 h-4.5 w-4.5 transition-transform duration-300 group-hover:translate-x-1" />
               </Button>
             </Link>
             <Link href="/auth">
-              <button className="btn-fill h-13 rounded-full px-7 text-[16px] font-semibold">
+              <button className="btn-fill h-13 rounded-lg px-7 text-[16px] font-semibold">
                 Get Started
               </button>
             </Link>
@@ -85,8 +85,8 @@ export default function HeroSection() {
               priority
             />
             <div className="absolute bottom-5 left-5 flex items-center gap-3 rounded-xl border border-border bg-card/90 px-4 py-2.5 shadow-lg backdrop-blur-md">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary">
-                <Video className="h-4 w-4 text-primary" />
+              <div className="icon-box flex h-9 w-9 items-center justify-center">
+                <Video className="h-4 w-4" />
               </div>
               <div>
                 <p className="text-[13px] font-bold text-foreground">Live Consultation</p>

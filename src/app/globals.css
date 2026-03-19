@@ -61,6 +61,7 @@
 
   --primary: #2563eb;
   --primary-hover: #1d4ed8;
+  --hover-bg: #e2e8f0;
   --primary-light: #dbeafe;
   --primary-border: #93c5fd;
 
@@ -114,6 +115,7 @@
 
   --primary: #3b82f6;
   --primary-hover: #2563eb;
+  --hover-bg: #1f2937;
   --primary-light: #1e3a8a;
   --primary-border: #60a5fa;
 
@@ -446,6 +448,63 @@
   }
 }
 
+@layer components {
+  .menu-item {
+    padding: 8px 16px;
+    border-radius: 6px;
+    background: transparent;
+    transition: all 0.2s ease;
+  }
+
+  .menu-item:hover {
+    background: var(--hover-bg);
+  }
+
+  .dropdown-item {
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+  }
+
+  .dropdown-item:hover {
+    background: var(--hover-bg);
+  }
+
+  .secondary-btn {
+    background: var(--bg-secondary);
+    color: var(--primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 18px;
+    transition: all 0.2s ease;
+  }
+
+  .secondary-btn:hover {
+    background: var(--hover-bg);
+  }
+
+  .icon-box {
+    background: #dbeafe;
+    color: #2563eb;
+    border-radius: 8px;
+  }
+
+  .dark .icon-box {
+    background: #1e3a8a;
+    color: #3b82f6;
+  }
+
+  .card-surface {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+
+  .card-surface:hover {
+    transform: translateY(-4px);
+  }
+}
+
 .dark body {
   background:
     radial-gradient(1200px 600px at 10% -10%, rgba(59, 130, 246, 0.12) 0%, transparent 58%),
@@ -491,36 +550,24 @@
 }
 
 /* Sky-blue fill button hover */
+
 .btn-fill {
-  position: relative;
-  overflow: hidden;
-  border: 2px solid var(--primary);
+  background: var(--bg-secondary);
   color: var(--primary);
-  background: var(--card);
-  z-index: 0;
-  transition: color 300ms ease-in-out;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 18px;
+  transition: all 0.2s ease;
 }
-.btn-fill::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--primary);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 300ms ease-in-out;
-  z-index: -1;
-}
+
 .btn-fill:hover {
-  color: var(--primary-foreground);
-}
-.btn-fill:hover::before {
-  transform: scaleX(1);
+  background: var(--hover-bg);
 }
 
 .dark .btn-fill {
-  background: transparent;
+  background: var(--bg-secondary);
   color: var(--primary);
-  border-color: var(--primary);
+  border-color: var(--border);
 }
 
 /* Global medical background pattern — dedicated fixed layer */

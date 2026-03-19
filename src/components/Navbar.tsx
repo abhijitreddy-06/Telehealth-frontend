@@ -54,7 +54,7 @@ export default function Navbar() {
             <li key={link.href}>
               <Link
                 href={link.href}
-                className="relative text-[15px] font-medium text-muted-foreground transition-colors duration-200 hover:text-primary after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 after:rounded-full after:bg-primary after:transition-all after:duration-200 hover:after:w-full"
+                className="menu-item text-[15px] font-medium text-muted-foreground transition-colors duration-200 hover:text-primary"
               >
                 {link.label}
               </Link>
@@ -67,16 +67,16 @@ export default function Navbar() {
           <button
             type="button"
             onClick={toggleTheme}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition hover:bg-secondary"
+            className="flex h-10 w-10 items-center justify-center rounded-md border border-border bg-card text-muted-foreground transition hover:bg-secondary"
             aria-label="Toggle theme"
             title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
           >
             {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
           <Link href="/auth">
-            <button className="btn-fill rounded-full px-6 py-2.5 text-[15px] font-semibold shadow-sm">
+            <Button className="h-10 rounded-lg px-5 text-[15px] font-semibold text-primary-foreground">
               Get Started
-            </button>
+            </Button>
           </Link>
         </div>
 
@@ -85,7 +85,7 @@ export default function Navbar() {
           <button
             type="button"
             onClick={toggleTheme}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition hover:bg-secondary"
+            className="flex h-10 w-10 items-center justify-center rounded-md border border-border bg-card text-muted-foreground transition hover:bg-secondary"
             aria-label="Toggle theme"
           >
             {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
@@ -116,13 +116,13 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="rounded-lg px-4 py-3 text-[15px] font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
+                  className="menu-item text-[15px] font-medium text-muted-foreground transition-colors hover:text-primary"
                 >
                   {link.label}
                 </Link>
               ))}
               <Link href="/auth" onClick={() => setMobileOpen(false)}>
-                <Button className="mt-2 w-full rounded-full bg-primary py-5 font-semibold text-primary-foreground shadow-md">
+                <Button className="mt-2 h-10 w-full rounded-lg font-semibold text-primary-foreground shadow-md">
                   Get Started
                 </Button>
               </Link>

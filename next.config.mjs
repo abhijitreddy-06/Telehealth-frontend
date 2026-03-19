@@ -10,6 +10,10 @@ if (isProduction && !configuredBackend) {
   );
 }
 
+if (isProduction && configuredBackend && configuredBackend.startsWith("http://")) {
+  throw new Error("NEXT_SERVER_API_URL must use HTTPS in production.");
+}
+
 const BACKEND = (configuredBackend || "http://localhost:10000").replace(/\/$/, "");
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
