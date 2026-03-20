@@ -81,7 +81,7 @@ export default function AuthCard({ role }: AuthCardProps) {
     let timeoutId: number | null = null;
     try {
       const controller = new AbortController();
-      timeoutId = window.setTimeout(() => controller.abort(), 12000);
+      timeoutId = window.setTimeout(() => controller.abort(), 70000);
 
       const response = await fetch(endpoint, {
         method: "POST",
@@ -124,7 +124,7 @@ export default function AuthCard({ role }: AuthCardProps) {
       }, 350);
     } catch (err: any) {
       if (err?.name === "AbortError") {
-        setError("Login timed out. Please try again.");
+        setError("Server is waking up. Please wait a moment and try again.");
       } else {
         setError(err.message || "Something went wrong.");
       }
@@ -175,7 +175,7 @@ export default function AuthCard({ role }: AuthCardProps) {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2 }}
             >
-              <h2 className="font-heading text-[24px] font-bold leading-tight">
+              <h2 className="font-heading text-[24px] font-bold leading-tight text-white">
                 {isLogin ? "Welcome Back" : "Create Your Account"}
               </h2>
               <p className="mt-3 text-[14px] leading-relaxed text-blue-100">

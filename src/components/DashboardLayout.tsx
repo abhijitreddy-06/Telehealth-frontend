@@ -161,7 +161,7 @@ export default function DashboardLayout({
                   "menu-item flex items-center gap-3 text-[15px] font-medium transition-colors",
                   isActive
                     ? "bg-secondary text-primary"
-                    : "text-muted-foreground hover:text-foreground",
+                    : "text-muted-foreground hover:text-foreground dark:text-white",
                 )}
               >
                 <Icon
@@ -219,7 +219,7 @@ export default function DashboardLayout({
                 type="button"
                 variant="outline"
                 onClick={onToggleTheme}
-                className="h-10 w-10 rounded-md border-border bg-card p-0 text-muted-foreground backdrop-blur hover:bg-secondary"
+                className="h-10 w-10 rounded-md border-2 border-black bg-card p-0 text-muted-foreground backdrop-blur hover:bg-secondary dark:border-white dark:text-white"
                 aria-label="Toggle theme"
                 title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
               >
@@ -263,7 +263,7 @@ export default function DashboardLayout({
                           "dropdown-item mx-1 flex items-center gap-2.5 text-sm transition",
                           pathname === item.href
                             ? "bg-secondary text-primary"
-                            : "text-muted-foreground hover:text-foreground",
+                            : "text-muted-foreground hover:text-foreground dark:text-white",
                         )}
                       >
                         <Icon className="h-4 w-4" />

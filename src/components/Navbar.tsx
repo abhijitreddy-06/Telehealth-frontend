@@ -50,7 +50,7 @@ export default function Navbar() {
             <li key={link.href}>
               <Link
                 href={link.href}
-                className="menu-item text-[15px] font-medium text-muted-foreground transition-colors duration-200 hover:text-primary"
+                className="menu-item text-[15px] font-medium text-muted-foreground transition-colors duration-200 hover:text-primary dark:text-white"
               >
                 {link.label}
               </Link>
@@ -63,7 +63,7 @@ export default function Navbar() {
           <button
             type="button"
             onClick={toggleTheme}
-            className="flex h-10 w-10 items-center justify-center rounded-md border border-border bg-card text-muted-foreground transition hover:bg-secondary"
+            className="flex h-10 w-10 items-center justify-center rounded-md border-2 border-black bg-card text-muted-foreground transition hover:bg-secondary dark:border-white dark:text-white"
             aria-label="Toggle theme"
             title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
           >
@@ -81,7 +81,7 @@ export default function Navbar() {
           <button
             type="button"
             onClick={toggleTheme}
-            className="flex h-10 w-10 items-center justify-center rounded-md border border-border bg-card text-muted-foreground transition hover:bg-secondary"
+            className="flex h-10 w-10 items-center justify-center rounded-md border-2 border-black bg-card text-muted-foreground transition hover:bg-secondary dark:border-white dark:text-white"
             aria-label="Toggle theme"
           >
             {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
@@ -112,7 +112,7 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="menu-item text-[15px] font-medium text-muted-foreground transition-colors hover:text-primary"
+                  className="menu-item text-[15px] font-medium text-muted-foreground transition-colors hover:text-primary dark:text-white"
                 >
                   {link.label}
                 </Link>

@@ -34,13 +34,13 @@ export default function Logo({ className, textClassName, iconClassName, size = "
     <span className={cn("inline-flex items-center", sizing.wrapper, className)}>
       <span
         className={cn(
-          "icon-box inline-flex items-center justify-center border border-(--primary-border)",
+          "icon-box inline-flex items-center justify-center border border-(--primary-border) dark:border-white/35",
           sizing.iconBox,
           iconClassName,
         )}
         aria-hidden="true"
       >
-        <HeartPulse className={sizing.icon} strokeWidth={2.1} />
+        <HeartPulse className={cn(sizing.icon, "text-primary dark:text-white")} strokeWidth={2.1} />
       </span>
       <span className={cn("font-logo font-medium tracking-tight text-foreground", sizing.text, textClassName)}>
         Tele<span className="text-primary">Health</span>

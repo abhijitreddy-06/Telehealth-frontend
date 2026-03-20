@@ -13,7 +13,7 @@ if (isProduction && configuredBackend && configuredBackend.startsWith("http://")
 }
 
 const BACKEND_URL = (configuredBackend || "http://localhost:10000").replace(/\/$/, "");
-const SESSION_FETCH_TIMEOUT_MS = 3500;
+const SESSION_FETCH_TIMEOUT_MS = 70000;
 
 const publicOnlyPaths = ["/", "/services", "/contact", "/auth", "/signup"];
 const patientProtectedPaths = [

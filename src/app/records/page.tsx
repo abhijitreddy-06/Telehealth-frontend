@@ -386,7 +386,7 @@ export default function RecordsPage() {
             </p>
             <button
               onClick={() => setUploadOpen(true)}
-                className="mt-5 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-sky-800 transition hover:bg-sky-50"
+                className="mt-5 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-sky-800 transition hover:bg-sky-50 dark:text-white"
             >
               <Upload className="h-4 w-4" />
               Upload Record

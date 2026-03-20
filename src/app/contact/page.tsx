@@ -98,8 +98,8 @@ export default function ContactPage() {
             <div className="space-y-6">
               {contactInfo.map((item) => (
                 <div key={item.label} className="flex items-start gap-4">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-sky-50 dark:bg-sky-500/15">
-                    <item.icon className="h-5 w-5 text-sky-600" />
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-sky-50 dark:bg-sky-700">
+                    <item.icon className="h-5 w-5 text-sky-600 dark:text-white" />
                   </div>
                   <div>
                     <p className="text-[13px] font-bold uppercase tracking-wider text-slate-400">

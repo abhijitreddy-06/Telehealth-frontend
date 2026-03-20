@@ -87,7 +87,7 @@ const sectionAnim = {
   transition: { duration: 0.5, ease: "easeOut" as const },
 };
 
-const REQUEST_TIMEOUT_MS = 12000;
+const REQUEST_TIMEOUT_MS = 70000;
 
 function formatDateForAPI(date: Date) {
   const y = date.getFullYear();
