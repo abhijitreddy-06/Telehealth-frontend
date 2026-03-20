@@ -241,7 +241,7 @@ export default function DashboardLayout({
               >
                 <span
                   className={cn(
-                    "flex h-8 w-8 items-center justify-center rounded-full text-[14px] font-bold",
+                    "flex h-8 w-8 items-center justify-center rounded-full border border-transparent text-[14px] font-bold dark:border-white/45",
                     "bg-secondary text-primary dark:text-white",
                   )}
                 >

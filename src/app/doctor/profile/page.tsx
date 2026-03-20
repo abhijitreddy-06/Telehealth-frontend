@@ -157,14 +157,14 @@ export default function DoctorProfilePage() {
         >
           <div className="flex flex-col gap-6 p-8 md:flex-row md:items-end md:justify-between md:p-10">
             <div className="space-y-3">
-              <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-sky-700 shadow-sm dark:bg-slate-900/80 dark:text-sky-300">
+              <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-sky-700 shadow-sm dark:bg-slate-900/80 dark:text-white">
                 <Sparkles className="h-3.5 w-3.5" />
                 Doctor Profile
               </span>
-              <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 md:text-4xl">
+              <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white md:text-4xl">
                 Professional Profile
               </h1>
-              <p className="max-w-2xl text-[15px] leading-relaxed text-slate-600 dark:text-slate-300">
+              <p className="max-w-2xl text-[15px] leading-relaxed text-slate-600 dark:text-white">
                 This mirrors the old doctor profile content: core credentials, specialization, experience, affiliation, and bio patients rely on when choosing care.
               </p>
             </div>
@@ -188,11 +188,11 @@ export default function DoctorProfilePage() {
               <div key={item.label} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
                 <div className="flex items-start gap-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-100 dark:bg-sky-500/15">
-                    <Icon className="h-5 w-5 text-sky-600 dark:text-sky-300" />
+                    <Icon className="h-5 w-5 text-sky-600 dark:text-white" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{item.label}</p>
-                    <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-slate-100">{item.value}</p>
+                    <p className="text-sm font-medium text-slate-500 dark:text-white">{item.label}</p>
+                    <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-white">{item.value}</p>
                   </div>
                 </div>
               </div>
@@ -207,11 +207,11 @@ export default function DoctorProfilePage() {
         >
           <div className="flex items-start gap-4">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-100 dark:bg-sky-500/15">
-              <FileText className="h-5 w-5 text-sky-600 dark:text-sky-300" />
+              <FileText className="h-5 w-5 text-sky-600 dark:text-white" />
             </div>
             <div className="flex-1">
-              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">Bio</h2>
-              <p className="mt-2 whitespace-pre-wrap text-[15px] leading-relaxed text-slate-600 dark:text-slate-300">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white">Bio</h2>
+              <p className="mt-2 whitespace-pre-wrap text-[15px] leading-relaxed text-slate-600 dark:text-white">
                 {profile.bio?.trim() ? profile.bio : "No bio added"}
               </p>
             </div>
@@ -221,3 +221,4 @@ export default function DoctorProfilePage() {
     </DashboardLayout>
   );
 }
+

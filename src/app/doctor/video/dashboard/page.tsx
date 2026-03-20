@@ -289,10 +289,10 @@ export default function DocVideoDashboard() {
           {...sectionAnim}
           className="rounded-2xl border border-slate-200/80 bg-white p-8 shadow-sm dark:border-slate-700 dark:bg-slate-900"
         >
-          <h1 className="mb-2 text-3xl font-bold text-slate-900 dark:text-slate-100">
+          <h1 className="mb-2 text-3xl font-bold text-slate-900 dark:text-white">
             Video Consultation Dashboard
           </h1>
-          <p className="text-slate-600 dark:text-slate-400">
+          <p className="text-slate-600 dark:text-white">
             Start and manage your virtual consultations with patients
           </p>
         </motion.div>
@@ -307,20 +307,20 @@ export default function DocVideoDashboard() {
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-sky-100 dark:bg-sky-500/20">
                 <Video className="h-6 w-6 text-sky-600 dark:text-white" />
               </div>
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
                 Your Appointment
               </h2>
             </div>
 
             {appointmentsLoading ? (
-              <div className="flex items-center justify-center rounded-lg border border-slate-200 bg-slate-50 p-8 text-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+              <div className="flex items-center justify-center rounded-lg border border-slate-200 bg-slate-50 p-8 text-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                 Loading first appointment...
               </div>
             ) : !firstUpcomingAppointment ? (
               <div className="rounded-lg border border-slate-200 bg-slate-50 p-8 text-center dark:border-slate-700 dark:bg-slate-800">
-                <Calendar className="mx-auto mb-3 h-12 w-12 text-slate-300 dark:text-slate-600" />
-                <p className="font-medium text-slate-600 dark:text-slate-400">
+                <Calendar className="mx-auto mb-3 h-12 w-12 text-slate-300 dark:text-white" />
+                <p className="font-medium text-slate-600 dark:text-white">
                   No upcoming appointments. Appointments will appear here.
                 </p>
               </div>
@@ -338,30 +338,30 @@ export default function DocVideoDashboard() {
                 <div className="space-y-4">
                   <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
                     <div className="flex flex-wrap items-center justify-between gap-3">
-                      <p className="text-base font-semibold text-slate-900 dark:text-slate-100">
+                      <p className="text-base font-semibold text-slate-900 dark:text-white">
                         {appt.user_name || "Patient"}
                       </p>
                       <span
                         className={[
                           "rounded-full px-3 py-1 text-xs font-semibold capitalize",
                           isStarted
-                            ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300"
-                            : "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300",
+                            ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-white"
+                            : "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-white",
                         ].join(" ")}
                       >
                         {isStarted ? "Started" : "Scheduled"}
                       </span>
                     </div>
 
-                    <p className="mt-1 flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                    <p className="mt-1 flex items-center gap-2 text-sm text-slate-600 dark:text-white">
                       <Calendar className="h-4 w-4" /> {dateText}
                       <Clock className="ml-2 h-4 w-4" /> {timeText}
                     </p>
                   </div>
 
                   <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
-                    <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Patient Details</h3>
-                    <div className="mt-3 grid grid-cols-2 gap-2 text-sm text-slate-700 dark:text-slate-200">
+                    <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Patient Details</h3>
+                    <div className="mt-3 grid grid-cols-2 gap-2 text-sm text-slate-700 dark:text-white">
                       <p>Gender: {appt.gender || "-"}</p>
                       <p>Blood Group: {appt.blood_group || "-"}</p>
                       <p>Weight: {appt.weight_kg ?? "-"} kg</p>
@@ -369,13 +369,13 @@ export default function DocVideoDashboard() {
                     </div>
 
                     {appt.allergies ? (
-                      <p className="mt-2 text-sm text-slate-700 dark:text-slate-200">
+                      <p className="mt-2 text-sm text-slate-700 dark:text-white">
                         Allergies: {appt.allergies}
                       </p>
                     ) : null}
 
                     {appt.symptoms ? (
-                      <div className="mt-3 flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300">
+                      <div className="mt-3 flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-white">
                         <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
                         <span>{appt.symptoms}</span>
                       </div>
@@ -383,7 +383,7 @@ export default function DocVideoDashboard() {
                   </div>
 
                   {blockReason ? (
-                    <p className="text-xs text-amber-700 dark:text-amber-300">{blockReason}</p>
+                    <p className="text-xs text-amber-700 dark:text-white">{blockReason}</p>
                   ) : null}
 
                   <div className="space-y-2">
@@ -412,7 +412,7 @@ export default function DocVideoDashboard() {
 
                     <Button
                       variant="outline"
-                      className="w-full border-red-300 text-red-600 hover:bg-red-50 dark:border-red-700 dark:text-red-300 dark:hover:bg-red-900/20"
+                      className="w-full border-red-300 text-red-600 hover:bg-red-50 dark:border-red-700 dark:text-white dark:hover:bg-red-900/20"
                       onClick={() => handleCancelAppointment(appt.id)}
                       disabled={isCancelling || isStarted}
                     >
@@ -438,20 +438,20 @@ export default function DocVideoDashboard() {
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-sky-100 dark:bg-sky-500/20">
                 <Calendar className="h-6 w-6 text-sky-600 dark:text-white" />
               </div>
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
                 List of All Appointments
               </h2>
             </div>
 
             {appointmentsLoading ? (
-              <div className="flex items-center justify-center rounded-lg border border-slate-200 bg-slate-50 p-8 text-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+              <div className="flex items-center justify-center rounded-lg border border-slate-200 bg-slate-50 p-8 text-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                 Loading appointments...
               </div>
             ) : sortedAppointments.length === 0 ? (
               <div className="rounded-lg border border-slate-200 bg-slate-50 p-8 text-center dark:border-slate-700 dark:bg-slate-800">
-                <Calendar className="mx-auto mb-3 h-12 w-12 text-slate-300 dark:text-slate-600" />
-                <p className="font-medium text-slate-600 dark:text-slate-400">
+                <Calendar className="mx-auto mb-3 h-12 w-12 text-slate-300 dark:text-white" />
+                <p className="font-medium text-slate-600 dark:text-white">
                   No appointments found.
                 </p>
               </div>
@@ -468,22 +468,22 @@ export default function DocVideoDashboard() {
                       className="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800"
                     >
                       <div className="flex flex-wrap items-center justify-between gap-3">
-                        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                        <p className="text-sm font-semibold text-slate-900 dark:text-white">
                           {appt.user_name || "Patient"}
                         </p>
                         <span
                           className={[
                             "rounded-full px-3 py-1 text-xs font-semibold capitalize",
                             isStarted
-                              ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300"
-                              : "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300",
+                              ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-white"
+                              : "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-white",
                           ].join(" ")}
                         >
                           {isStarted ? "Started" : "Scheduled"}
                         </span>
                       </div>
 
-                      <p className="mt-1 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                      <p className="mt-1 flex items-center gap-2 text-xs text-slate-500 dark:text-white">
                         <Calendar className="h-3.5 w-3.5" /> {dateText}
                         <Clock className="ml-2 h-3.5 w-3.5" /> {timeText}
                       </p>
@@ -498,3 +498,4 @@ export default function DocVideoDashboard() {
     </DashboardLayout>
   );
 }
+

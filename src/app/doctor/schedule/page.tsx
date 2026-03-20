@@ -313,10 +313,10 @@ export default function DocSchedule() {
           {...sectionAnim}
           className="rounded-2xl border border-slate-200/80 bg-white p-8 shadow-sm dark:border-slate-700 dark:bg-slate-900"
         >
-          <h1 className="mb-2 text-3xl font-bold text-slate-900 dark:text-slate-100">
+          <h1 className="mb-2 text-3xl font-bold text-slate-900 dark:text-white">
             Schedule Management
           </h1>
-          <p className="text-slate-600 dark:text-slate-400">
+          <p className="text-slate-600 dark:text-white">
             Set your weekly availability and manage schedule overrides
           </p>
         </motion.div>
@@ -329,8 +329,8 @@ export default function DocSchedule() {
             className="rounded-xl border border-slate-200/80 bg-white p-8 shadow-sm dark:border-slate-700 dark:bg-slate-900"
           >
             <div className="mb-6 flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-sky-600 dark:text-sky-400" />
-              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+              <Calendar className="h-5 w-5 text-sky-600 dark:text-white" />
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white">
                 Weekly Schedule
               </h2>
             </div>
@@ -351,7 +351,7 @@ export default function DocSchedule() {
                       className="h-4 w-4 rounded border-slate-300 text-sky-600 focus:ring-2 focus:ring-sky-500"
                     />
                   </label>
-                  <span className="min-w-20 font-medium text-slate-900 dark:text-slate-100">
+                  <span className="min-w-20 font-medium text-slate-900 dark:text-white">
                     {day}
                   </span>
                   <div className="grid w-full grid-cols-2 gap-2 sm:flex-1">
@@ -392,8 +392,8 @@ export default function DocSchedule() {
             className="rounded-xl border border-slate-200/80 bg-white p-8 shadow-sm dark:border-slate-700 dark:bg-slate-900"
           >
             <div className="mb-6 flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-sky-600 dark:text-sky-400" />
-              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+              <Calendar className="h-5 w-5 text-sky-600 dark:text-white" />
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white">
                 Schedule Overrides
               </h2>
             </div>
@@ -401,7 +401,7 @@ export default function DocSchedule() {
             <div className="overflow-x-auto">
               <div className="space-y-4 rounded-lg border border-slate-200/50 bg-slate-50 p-3 sm:p-4 dark:border-slate-700/50 dark:bg-slate-800/50">
                 <div className="min-w-0">
-                  <label className="block text-sm font-medium text-slate-900 dark:text-slate-100">
+                  <label className="block text-sm font-medium text-slate-900 dark:text-white">
                     Date
                   </label>
                   <Input
@@ -414,7 +414,7 @@ export default function DocSchedule() {
                 </div>
 
                 <div className="min-w-0">
-                  <label className="block text-sm font-medium text-slate-900 dark:text-slate-100">
+                  <label className="block text-sm font-medium text-slate-900 dark:text-white">
                     Reason *
                   </label>
                   <Input
@@ -427,7 +427,7 @@ export default function DocSchedule() {
                     aria-invalid={showReasonError}
                   />
                   {showReasonError ? (
-                    <p className="mt-1 text-xs text-red-600 dark:text-red-400">Reason is required.</p>
+                    <p className="mt-1 text-xs text-red-600 dark:text-white">Reason is required.</p>
                   ) : null}
                 </div>
 
@@ -444,7 +444,7 @@ export default function DocSchedule() {
 
             {overrides.length === 0 ? (
               <div className="py-6 text-center">
-                <p className="text-sm text-slate-500 dark:text-slate-400">
+                <p className="text-sm text-slate-500 dark:text-white">
                   No overrides set
                 </p>
               </div>
@@ -457,16 +457,16 @@ export default function DocSchedule() {
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                        <p className="text-sm font-semibold text-slate-900 dark:text-white">
                           {formatOverrideDate(item.override_date)}
                         </p>
-                        <p className="text-xs text-slate-600 dark:text-slate-400">
+                        <p className="text-xs text-slate-600 dark:text-white">
                           {item.override_type === "unavailable"
                             ? "Unavailable all day"
                             : `${normalizeTime(item.start_time)} - ${normalizeTime(item.end_time)}`}
                         </p>
                         {item.reason ? (
-                          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                          <p className="mt-1 text-xs text-slate-500 dark:text-white">
                             {item.reason}
                           </p>
                         ) : null}
@@ -491,3 +491,4 @@ export default function DocSchedule() {
     </DashboardLayout>
   );
 }
+
