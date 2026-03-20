@@ -219,7 +219,7 @@ export default function DashboardLayout({
                 type="button"
                 variant="outline"
                 onClick={onToggleTheme}
-                className="h-10 w-10 rounded-md border border-border bg-card p-0 text-muted-foreground backdrop-blur hover:bg-secondary dark:border-2 dark:border-white dark:text-white"
+                className="h-10 w-10 rounded-md border border-border bg-card p-0 text-muted-foreground backdrop-blur hover:bg-secondary dark:border-white/70 dark:text-white"
                 aria-label="Toggle theme"
                 title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
               >
@@ -234,7 +234,7 @@ export default function DashboardLayout({
               <button
                 type="button"
                 onClick={() => setProfileMenuOpen((prev) => !prev)}
-                className="flex items-center gap-1.5 rounded-lg border border-border bg-card p-1 pr-2 shadow-sm transition hover:bg-secondary"
+                className="flex items-center gap-1.5 rounded-lg border border-border bg-card p-1 pr-2 shadow-sm transition hover:bg-secondary dark:border-white/35"
                 aria-haspopup="menu"
                 aria-expanded={profileMenuOpen}
                 aria-label="Open profile menu"
@@ -251,7 +251,7 @@ export default function DashboardLayout({
               </button>
 
               {profileMenuOpen && profileLinks.length > 0 && (
-                <div className="absolute right-0 z-30 mt-2 w-52 overflow-hidden rounded-[10px] border border-border bg-card py-1.5 shadow-lg">
+                <div className="absolute right-0 z-30 mt-2 w-52 overflow-hidden rounded-[10px] border border-border bg-card py-1.5 shadow-lg dark:border-white/35">
                   {profileLinks.map((item) => {
                     const Icon = item.icon;
                     return (

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { io, type Socket } from "socket.io-client";
-import { Camera, CameraOff, Mic, MicOff, Moon, Phone, PhoneOff, ShieldCheck, Sun, Wifi, WifiOff } from "lucide-react";
+import { Camera, CameraOff, FileText, Mic, MicOff, Moon, PhoneOff, ShieldCheck, Sun, Wifi, WifiOff, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { saveConsultationNotes } from "@/lib/api";
@@ -25,10 +25,35 @@ type SignalPayload = {
   from?: Role;
 };
 
-const ICE_SERVERS: RTCIceServer[] = [
-  { urls: "stun:stun.l.google.com:19302" },
-  { urls: "stun:stun1.l.google.com:19302" },
-];
+const TURN_URL = process.env.NEXT_PUBLIC_TURN_URL;
+const TURN_USERNAME = process.env.NEXT_PUBLIC_TURN_USERNAME;
+const TURN_CREDENTIAL = process.env.NEXT_PUBLIC_TURN_CREDENTIAL;
+
+function buildIceServers(): RTCIceServer[] {
+  const servers: RTCIceServer[] = [
+    { urls: "stun:stun.l.google.com:19302" },
+    { urls: "stun:stun1.l.google.com:19302" },
+  ];
+
+  if (TURN_URL) {
+    const urls = TURN_URL
+      .split(",")
+      .map((url) => url.trim())
+      .filter(Boolean);
+
+    if (urls.length) {
+      servers.push({
+        urls: urls.length === 1 ? urls[0] : urls,
+        username: TURN_USERNAME,
+        credential: TURN_CREDENTIAL,
+      });
+    }
+  }
+
+  return servers;
+}
+
+const ICE_SERVERS: RTCIceServer[] = buildIceServers();
 
 function resolveSocketUrl() {
   const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL;
@@ -637,7 +662,7 @@ export default function VideoRoomClient({
               }
               onClick={() => setShowNotes((prev) => !prev)}
             >
-              <Phone className="mr-2 h-4 w-4" />
+              <FileText className="mr-2 h-4 w-4" />
               {showNotes ? "Hide Notes" : "Show Notes"}
             </Button>
 
@@ -678,7 +703,13 @@ export default function VideoRoomClient({
           </div>
         )}
 
-        <div className="absolute bottom-24 right-4 z-20 w-40 overflow-hidden rounded-xl border-2 border-white/70 bg-black shadow-2xl sm:w-52">
+        <div
+          className={`absolute z-20 w-40 overflow-hidden rounded-xl border-2 border-white/70 bg-black shadow-2xl transition-all duration-300 sm:w-52 ${
+            showNotes
+              ? "bottom-[63vh] right-4 md:bottom-24 md:right-116"
+              : "bottom-24 right-4"
+          }`}
+        >
           <video ref={localVideoRef} autoPlay playsInline muted className="h-30 w-full bg-black object-cover sm:h-36" />
           <div className="absolute bottom-2 left-2 rounded-full bg-black/70 px-2 py-0.5 text-[11px] font-medium text-white">
             You ({selfName})
@@ -692,7 +723,7 @@ export default function VideoRoomClient({
         </div>
 
         <div className="pointer-events-none absolute inset-x-0 bottom-4 z-20 px-3">
-          <div className="pointer-events-auto mx-auto flex w-full max-w-md items-center justify-center gap-2 rounded-2xl border border-white/20 bg-black/60 p-2 backdrop-blur">
+          <div className="pointer-events-auto mx-auto flex w-full max-w-xl flex-wrap items-center justify-center gap-2 rounded-2xl border border-white/20 bg-black/65 p-2.5 backdrop-blur">
             <Button onClick={handleToggleMute} variant={isMuted ? "destructive" : "secondary"} className="h-10 min-w-23">
               {isMuted ? <MicOff className="mr-2 h-4 w-4" /> : <Mic className="mr-2 h-4 w-4" />}
               {isMuted ? "Unmute" : "Mute"}
@@ -700,6 +731,15 @@ export default function VideoRoomClient({
             <Button onClick={handleToggleVideo} variant={isVideoOff ? "destructive" : "secondary"} className="h-10 min-w-26.5">
               {isVideoOff ? <CameraOff className="mr-2 h-4 w-4" /> : <Camera className="mr-2 h-4 w-4" />}
               {isVideoOff ? "Video On" : "Video Off"}
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              className="h-10 min-w-28"
+              onClick={() => setShowNotes((prev) => !prev)}
+            >
+              <FileText className="mr-2 h-4 w-4" />
+              {showNotes ? "Hide Notes" : "Notes"}
             </Button>
             <Button type="button" variant="destructive" className="h-10 min-w-26" onClick={endCallAsDoctor} disabled={endingCall}>
               <PhoneOff className="mr-2 h-4 w-4" />
@@ -711,8 +751,8 @@ export default function VideoRoomClient({
         <div
           className={
             theme === "dark"
-              ? `absolute bottom-0 right-0 top-0 z-30 w-full max-w-md border-l border-slate-700 bg-slate-900/95 p-4 backdrop-blur transition-transform duration-300 ease-out ${showNotes ? "translate-x-0" : "translate-x-full"}`
-              : `absolute bottom-0 right-0 top-0 z-30 w-full max-w-md border-l border-slate-300 bg-white/95 p-4 backdrop-blur transition-transform duration-300 ease-out ${showNotes ? "translate-x-0" : "translate-x-full"}`
+              ? `absolute inset-x-0 bottom-0 z-30 h-[60vh] rounded-t-3xl border-t border-slate-700 bg-slate-900/95 p-4 backdrop-blur transition-transform duration-300 ease-out md:inset-y-0 md:left-auto md:h-auto md:w-full md:max-w-md md:rounded-none md:border-l md:border-t-0 ${showNotes ? "translate-y-0 md:translate-x-0" : "translate-y-full md:translate-x-full md:translate-y-0"}`
+              : `absolute inset-x-0 bottom-0 z-30 h-[60vh] rounded-t-3xl border-t border-slate-300 bg-white/95 p-4 backdrop-blur transition-transform duration-300 ease-out md:inset-y-0 md:left-auto md:h-auto md:w-full md:max-w-md md:rounded-none md:border-l md:border-t-0 ${showNotes ? "translate-y-0 md:translate-x-0" : "translate-y-full md:translate-x-full md:translate-y-0"}`
           }
         >
           <div className="flex items-center justify-between">
@@ -721,11 +761,12 @@ export default function VideoRoomClient({
             </h2>
             <Button
               type="button"
+              size="icon"
               variant="outline"
-              className={theme === "dark" ? "h-9 border-slate-700 bg-slate-800 text-slate-100 hover:bg-slate-700" : "h-9 border-slate-300 bg-white text-slate-800 hover:bg-slate-100"}
+              className={theme === "dark" ? "h-9 w-9 rounded-full border-slate-700 bg-slate-800 text-slate-100 hover:bg-slate-700" : "h-9 w-9 rounded-full border-slate-300 bg-white text-slate-800 hover:bg-slate-100"}
               onClick={() => setShowNotes(false)}
             >
-              Close
+              <X className="h-4 w-4" />
             </Button>
           </div>
 
@@ -736,8 +777,8 @@ export default function VideoRoomClient({
               placeholder="Write diagnosis, treatment plan, and prescription guidance..."
               className={
                 theme === "dark"
-                  ? "h-[72vh] w-full resize-y rounded-xl border border-slate-700 bg-slate-950 p-3 text-sm text-slate-100 outline-none focus:border-sky-500"
-                  : "h-[72vh] w-full resize-y rounded-xl border border-slate-300 bg-slate-50 p-3 text-sm text-slate-900 outline-none focus:border-sky-500"
+                  ? "h-[44vh] w-full resize-none rounded-xl border border-slate-700 bg-slate-950 p-3 text-sm text-slate-100 outline-none focus:border-sky-500 md:h-[72vh]"
+                  : "h-[44vh] w-full resize-none rounded-xl border border-slate-300 bg-slate-50 p-3 text-sm text-slate-900 outline-none focus:border-sky-500 md:h-[72vh]"
               }
             />
             <Button type="button" onClick={saveNotes} disabled={savingNotes} className="h-10 w-full">

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowRight, Camera, CheckCircle2, Loader2, Mic, RefreshCw, ShieldCheck, Wifi } from "lucide-react";
+import { ArrowRight, Camera, CheckCircle2, Loader2, Mic, Moon, RefreshCw, ShieldCheck, Sun, Wifi } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { getPatientVideoRoom } from "@/lib/api";
@@ -28,6 +28,7 @@ export default function PatientSetupPage() {
   const [micOk, setMicOk] = useState(false);
   const [rtt, setRtt] = useState<number | null>(null);
   const [errorText, setErrorText] = useState<string | null>(null);
+  const [theme, setTheme] = useState<"light" | "dark">("light");
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
@@ -77,6 +78,16 @@ export default function PatientSetupPage() {
   };
 
   useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    const initialTheme: "light" | "dark" =
+      savedTheme === "dark" || savedTheme === "light"
+        ? savedTheme
+        : "light";
+
+    document.documentElement.classList.toggle("dark", initialTheme === "dark");
+    localStorage.setItem("theme", initialTheme);
+    setTheme(initialTheme);
+
     runChecks().catch(() => {});
 
     return () => {
@@ -86,6 +97,13 @@ export default function PatientSetupPage() {
 
   const canContinue = roomValid && cameraOk && micOk;
 
+  const toggleTheme = () => {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    document.documentElement.classList.toggle("dark", nextTheme === "dark");
+    localStorage.setItem("theme", nextTheme);
+    setTheme(nextTheme);
+  };
+
   const continueToRoom = () => {
     if (!canContinue) return;
     localStorage.setItem(`videoSetup:patient:${roomId}`, "ok");
@@ -94,16 +112,28 @@ export default function PatientSetupPage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 sm:py-10">
+    <main className="min-h-screen bg-slate-50 px-4 py-6 dark:bg-slate-950 sm:px-6 sm:py-10">
       <div className="mx-auto grid w-full max-w-6xl gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-        <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
-          <div className="flex items-center gap-3">
+        <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900 sm:p-8">
+          <div className="flex items-center justify-between gap-3">
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="flex h-10 w-10 items-center justify-center rounded-md border border-border bg-card text-muted-foreground transition hover:bg-secondary dark:border-white/70 dark:text-white"
+              aria-label="Toggle theme"
+              title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            >
+              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </button>
+          </div>
+
+          <div className="mt-4 flex items-center gap-3">
             <div className="rounded-xl bg-sky-100 p-3 text-sky-700">
-              <ShieldCheck className="h-5 w-5" />
+              <ShieldCheck className="h-5 w-5 dark:text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">Patient pre-call setup</h1>
-              <p className="text-sm text-slate-500">Validate your room, permissions, and connection quality before joining.</p>
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Patient pre-call setup</h1>
+              <p className="text-sm text-slate-500 dark:text-white">Validate your room, permissions, and connection quality before joining.</p>
             </div>
           </div>
 
@@ -129,28 +159,28 @@ export default function PatientSetupPage() {
           </div>
         </section>
 
-        <aside className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
-          <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Readiness checklist</h2>
+        <aside className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900 sm:p-8">
+          <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-white">Readiness checklist</h2>
           <div className="mt-4 space-y-3 text-sm">
-            <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
-              <span className="inline-flex items-center gap-2 text-slate-700"><ShieldCheck className="h-4 w-4" /> Room access</span>
-              {roomValid ? <CheckCircle2 className="h-4 w-4 text-emerald-600" /> : <Loader2 className="h-4 w-4 animate-spin text-slate-400" />}
+            <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 dark:border-slate-700 dark:bg-slate-800">
+              <span className="inline-flex items-center gap-2 text-slate-700 dark:text-white"><ShieldCheck className="h-4 w-4 dark:text-white" /> Room access</span>
+              {roomValid ? <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-white" /> : <Loader2 className="h-4 w-4 animate-spin text-slate-400 dark:text-white" />}
             </div>
-            <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
-              <span className="inline-flex items-center gap-2 text-slate-700"><Camera className="h-4 w-4" /> Camera</span>
-              {cameraOk ? <CheckCircle2 className="h-4 w-4 text-emerald-600" /> : <span className="text-slate-500">Needs permission</span>}
+            <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 dark:border-slate-700 dark:bg-slate-800">
+              <span className="inline-flex items-center gap-2 text-slate-700 dark:text-white"><Camera className="h-4 w-4 dark:text-white" /> Camera</span>
+              {cameraOk ? <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-white" /> : <span className="text-slate-500 dark:text-white">Needs permission</span>}
             </div>
-            <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
-              <span className="inline-flex items-center gap-2 text-slate-700"><Mic className="h-4 w-4" /> Microphone</span>
-              {micOk ? <CheckCircle2 className="h-4 w-4 text-emerald-600" /> : <span className="text-slate-500">Needs permission</span>}
+            <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 dark:border-slate-700 dark:bg-slate-800">
+              <span className="inline-flex items-center gap-2 text-slate-700 dark:text-white"><Mic className="h-4 w-4 dark:text-white" /> Microphone</span>
+              {micOk ? <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-white" /> : <span className="text-slate-500 dark:text-white">Needs permission</span>}
             </div>
-            <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
-              <span className="inline-flex items-center gap-2 text-slate-700"><Wifi className="h-4 w-4" /> Network</span>
-              <span className={`font-semibold ${network.tone}`}>{network.label}{rtt !== null ? ` (${rtt}ms)` : ""}</span>
+            <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 dark:border-slate-700 dark:bg-slate-800">
+              <span className="inline-flex items-center gap-2 text-slate-700 dark:text-white"><Wifi className="h-4 w-4 dark:text-white" /> Network</span>
+              <span className={`font-semibold ${network.tone} dark:text-white`}>{network.label}{rtt !== null ? ` (${rtt}ms)` : ""}</span>
             </div>
           </div>
 
-          <p className="mt-4 text-xs leading-5 text-slate-500">
+          <p className="mt-4 text-xs leading-5 text-slate-500 dark:text-white">
             Secure signaling is authenticated with your session token. If checks fail, refresh permissions and retry.
           </p>
         </aside>
