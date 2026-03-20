@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { io, type Socket } from "socket.io-client";
-import { Camera, CameraOff, FileText, Mic, MicOff, Moon, PhoneOff, ShieldCheck, Sun, Wifi, WifiOff, X } from "lucide-react";
+import { Camera, CameraOff, FileText, Menu, Mic, MicOff, Moon, PhoneOff, Sun, Wifi, WifiOff, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { saveConsultationNotes } from "@/lib/api";
@@ -63,7 +63,12 @@ function resolveSocketUrl() {
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   if (apiUrl && /^https?:\/\//.test(apiUrl)) {
-    return apiUrl.replace(/\/backend\/?$/, "").replace(/\/$/, "");
+    try {
+      const parsed = new URL(apiUrl);
+      return parsed.origin;
+    } catch {
+      return apiUrl.replace(/\/$/, "");
+    }
   }
 
   if (typeof window !== "undefined" && window.location.port === "3000") {
@@ -107,8 +112,8 @@ export default function VideoRoomClient({
   const [notes, setNotes] = useState(defaultNotes);
   const [savingNotes, setSavingNotes] = useState(false);
   const [endingCall, setEndingCall] = useState(false);
-  const [reconnectBanner, setReconnectBanner] = useState<string | null>(null);
   const [theme, setTheme] = useState<"light" | "dark">("dark");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const roleLabel = role === "doctor" ? "doctor" : "patient";
   const dashboardPath = role === "doctor" ? "/doctor/video/dashboard" : "/patient/video/dashboard";
@@ -261,15 +266,17 @@ export default function VideoRoomClient({
       const state = pc.connectionState;
       if (state === "connected") {
         setPeerConnected(true);
-        setReconnectBanner(null);
+        toast.success("Secure call connected.");
         setCallStatus("Connected");
       }
 
       if (state === "disconnected") {
         setCallStatus("Connection interrupted...");
+        toast.warning("Connection interrupted. Reconnecting...");
       }
 
       if (state === "failed" && role === "doctor") {
+        toast.error("Connection failed. Restarting call negotiation...");
         createOffer(true).catch(() => {});
       }
     };
@@ -304,6 +311,7 @@ export default function VideoRoomClient({
         const socket = io(resolveSocketUrl(), {
           transports: ["websocket", "polling"],
           withCredentials: true,
+          timeout: 15000,
         });
         socketRef.current = socket;
 
@@ -312,8 +320,15 @@ export default function VideoRoomClient({
           setCallStatus("Joined secure room");
         });
 
-        socket.on("connect_error", () => {
-          setReconnectBanner("Signal server not reachable. Reconnecting...");
+        socket.on("connect_error", (error) => {
+          const message = error?.message?.toLowerCase() || "";
+          if (message.includes("authentication") || message.includes("token") || message.includes("expired")) {
+            toast.error("Video auth failed. Please log in again and reopen the room.");
+          } else if (message.includes("cors")) {
+            toast.error("Socket CORS blocked. Verify frontend URL is allowed on backend.");
+          } else {
+            toast.error("Signal server not reachable. Reconnecting...");
+          }
           setCallStatus("Reconnecting securely...");
         });
 
@@ -385,30 +400,27 @@ export default function VideoRoomClient({
         socket.on("participant-disconnected", (payload: { role: Role; graceMs?: number }) => {
           const name = payload.role === "doctor" ? "doctor" : "patient";
           const seconds = Math.round((payload.graceMs || 30000) / 1000);
-          setReconnectBanner(`The ${name} disconnected. Waiting up to ${seconds}s for reconnection...`);
+          toast.warning(`The ${name} disconnected. Waiting up to ${seconds}s for reconnection...`);
           setCallStatus("Peer disconnected");
         });
 
         socket.on("user-disconnected", () => {
           if (role === "doctor") {
-            setReconnectBanner("The patient disconnected. Waiting for reconnection...");
+            toast.warning("Patient disconnected. Waiting for reconnection...");
             setCallStatus("Peer disconnected");
           }
         });
 
         socket.on("doctor-disconnected", () => {
           if (role === "user") {
-            setReconnectBanner("The doctor disconnected. Waiting for reconnection...");
+            toast.warning("Doctor disconnected. Waiting for reconnection...");
             setCallStatus("Peer disconnected");
           }
         });
 
         socket.on("participant-reconnected", (payload: { role: Role }) => {
           const name = payload.role === "doctor" ? "Doctor" : "Patient";
-          setReconnectBanner(`${name} reconnected`);
-          setTimeout(() => {
-            if (mountedRef.current) setReconnectBanner(null);
-          }, 1500);
+          toast.success(`${name} reconnected`);
           if (role === "doctor") {
             createOffer(true).catch(() => {});
           }
@@ -540,252 +552,188 @@ export default function VideoRoomClient({
     );
   }, [peerConnected]);
 
+  const isDoctor = role === "doctor";
+
   const baseShell =
     theme === "dark"
-      ? "min-h-screen bg-slate-950 text-slate-100"
-      : "min-h-screen bg-slate-100 text-slate-900";
+      ? "h-screen overflow-hidden bg-slate-950 text-slate-100"
+      : "h-screen overflow-hidden bg-slate-100 text-slate-900";
 
-  const topBarClass =
+  const navClass =
     theme === "dark"
-      ? "absolute left-3 right-3 top-3 z-20 flex flex-col gap-2 rounded-xl border border-slate-700 bg-slate-900/70 p-2.5 backdrop-blur sm:flex-row sm:items-center sm:justify-between"
-      : "absolute left-3 right-3 top-3 z-20 flex flex-col gap-2 rounded-xl border border-slate-300 bg-white/85 p-2.5 backdrop-blur sm:flex-row sm:items-center sm:justify-between";
+      ? "fixed left-0 right-0 top-0 z-40 border-b border-slate-800 bg-slate-950/92 backdrop-blur"
+      : "fixed left-0 right-0 top-0 z-40 border-b border-slate-200 bg-white/92 backdrop-blur";
 
-  if (role === "user") {
-    return (
-      <div className={baseShell}>
-        <div className="relative min-h-screen overflow-hidden">
-          <video ref={remoteVideoRef} autoPlay playsInline className="h-screen w-full bg-black object-cover" />
+  return (
+    <div className={baseShell}>
+      <div className="relative h-screen overflow-hidden">
+        <video ref={remoteVideoRef} autoPlay playsInline className="absolute inset-0 h-full w-full bg-black object-cover" />
 
-          <div className={topBarClass}>
-            <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
-              <ShieldCheck className="h-4 w-4 text-emerald-500" />
-              <span className={theme === "dark" ? "text-xs text-slate-200" : "text-xs text-slate-700"}>
-                Secure patient room <span className="hidden sm:inline">{roomId.slice(0, 8)}...</span>
+        <div className={navClass}>
+          <div className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between px-3 sm:px-4">
+            <div className="flex items-center gap-2">
+              <span className={theme === "dark" ? "text-sm font-semibold tracking-wide text-white" : "text-sm font-semibold tracking-wide text-slate-900"}>
+                TeleHealthX
               </span>
-              {connectionPill}
             </div>
 
-            <div className="flex w-full items-center justify-end gap-2 sm:w-auto">
+            <div className="flex items-center gap-2">
+              <div className="hidden md:block">{connectionPill}</div>
               <div
                 className={
                   theme === "dark"
-                    ? "inline-flex items-center rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-300"
-                    : "inline-flex items-center rounded-full border border-slate-300 px-3 py-1 text-xs text-slate-700"
+                    ? "hidden rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-300 sm:inline-flex"
+                    : "hidden rounded-full border border-slate-300 px-3 py-1 text-xs text-slate-700 sm:inline-flex"
                 }
               >
                 {callStatus}
               </div>
+
               <Button
                 type="button"
                 size="icon"
                 variant="outline"
-                className={
-                  theme === "dark"
-                    ? "h-9 w-9 border-slate-700 bg-slate-900 text-slate-100 hover:bg-slate-800"
-                    : "h-9 w-9 border-slate-300 bg-white text-slate-800 hover:bg-slate-100"
-                }
+                className={theme === "dark" ? "h-9 w-9 border-slate-700 bg-slate-900 text-slate-100" : "h-9 w-9 border-slate-300 bg-white text-slate-800"}
                 onClick={toggleTheme}
               >
                 {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
               </Button>
-            </div>
-          </div>
 
-          {reconnectBanner && (
-            <div
-              className={
-                theme === "dark"
-                  ? "absolute left-3 right-3 top-20 z-20 rounded-xl border border-sky-700 bg-sky-900/50 px-3 py-2 text-xs text-sky-200"
-                  : "absolute left-3 right-3 top-20 z-20 rounded-xl border border-sky-300 bg-sky-50 px-3 py-2 text-xs text-sky-800"
-              }
-            >
-              {reconnectBanner}
-            </div>
-          )}
-
-          <div className="absolute bottom-24 right-4 z-20 w-40 overflow-hidden rounded-xl border-2 border-white/70 bg-black shadow-2xl sm:w-52">
-            <video ref={localVideoRef} autoPlay playsInline muted className="h-30 w-full bg-black object-cover sm:h-36" />
-            <div className="absolute bottom-2 left-2 rounded-full bg-black/70 px-2 py-0.5 text-[11px] font-medium text-white">
-              You ({selfName})
-            </div>
-          </div>
-
-          <div className="pointer-events-none absolute inset-x-0 bottom-4 z-20 px-3">
-            <div className="pointer-events-auto mx-auto flex w-full max-w-md items-center justify-center gap-2 rounded-2xl border border-white/20 bg-black/60 p-2 backdrop-blur">
-              <Button onClick={handleToggleMute} variant={isMuted ? "destructive" : "secondary"} className="h-10 min-w-23">
-                {isMuted ? <MicOff className="mr-2 h-4 w-4" /> : <Mic className="mr-2 h-4 w-4" />}
-                {isMuted ? "Unmute" : "Mute"}
-              </Button>
-              <Button onClick={handleToggleVideo} variant={isVideoOff ? "destructive" : "secondary"} className="h-10 min-w-26.5">
-                {isVideoOff ? <CameraOff className="mr-2 h-4 w-4" /> : <Camera className="mr-2 h-4 w-4" />}
-                {isVideoOff ? "Video On" : "Video Off"}
-              </Button>
-              <Button type="button" variant="destructive" className="h-10 min-w-26" onClick={leaveRoom}>
-                <PhoneOff className="mr-2 h-4 w-4" />
-                Leave
+              <Button
+                type="button"
+                size="icon"
+                variant="outline"
+                className={theme === "dark" ? "h-9 w-9 border-slate-700 bg-slate-900 text-slate-100" : "h-9 w-9 border-slate-300 bg-white text-slate-800"}
+                onClick={() => setMobileMenuOpen((prev) => !prev)}
+              >
+                <Menu className="h-4 w-4" />
               </Button>
             </div>
-          </div>
-
-          <div className="absolute bottom-4 left-4 z-20 rounded-full bg-black/70 px-3 py-1 text-xs font-medium text-white">
-            Dr. {peerName}
-            {peerMuted ? " (muted)" : ""}
-            {peerVideoOff ? " (camera off)" : ""}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className={baseShell}>
-      <div className="relative min-h-screen overflow-hidden">
-        <video ref={remoteVideoRef} autoPlay playsInline className="h-screen w-full bg-black object-cover" />
-
-        <div className={topBarClass}>
-          <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
-            <ShieldCheck className="h-4 w-4 text-emerald-500" />
-            <span className={theme === "dark" ? "text-xs text-slate-200" : "text-xs text-slate-700"}>
-              Secure doctor room <span className="hidden sm:inline">{roomId.slice(0, 8)}...</span>
-            </span>
-            {connectionPill}
-          </div>
-
-          <div className="flex w-full items-center justify-end gap-2 sm:w-auto">
-            <Button
-              type="button"
-              variant="outline"
-              className={
-                theme === "dark"
-                  ? "h-9 border-slate-700 bg-slate-900 text-slate-100 hover:bg-slate-800"
-                  : "h-9 border-slate-300 bg-white text-slate-800 hover:bg-slate-100"
-              }
-              onClick={() => setShowNotes((prev) => !prev)}
-            >
-              <FileText className="mr-2 h-4 w-4" />
-              {showNotes ? "Hide Notes" : "Show Notes"}
-            </Button>
-
-            <div
-              className={
-                theme === "dark"
-                  ? "inline-flex items-center rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-300"
-                  : "inline-flex items-center rounded-full border border-slate-300 px-3 py-1 text-xs text-slate-700"
-              }
-            >
-              {callStatus}
-            </div>
-            <Button
-              type="button"
-              size="icon"
-              variant="outline"
-              className={
-                theme === "dark"
-                  ? "h-9 w-9 border-slate-700 bg-slate-900 text-slate-100 hover:bg-slate-800"
-                  : "h-9 w-9 border-slate-300 bg-white text-slate-800 hover:bg-slate-100"
-              }
-              onClick={toggleTheme}
-            >
-              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </Button>
           </div>
         </div>
 
-        {reconnectBanner && (
+        {mobileMenuOpen && (
           <div
             className={
               theme === "dark"
-                ? "absolute left-3 right-3 top-20 z-20 rounded-xl border border-sky-700 bg-sky-900/50 px-3 py-2 text-xs text-sky-200"
-                : "absolute left-3 right-3 top-20 z-20 rounded-xl border border-sky-300 bg-sky-50 px-3 py-2 text-xs text-sky-800"
+                ? "fixed right-3 top-16 z-50 w-52 rounded-xl border border-slate-700 bg-slate-900/95 p-2 shadow-xl"
+                : "fixed right-3 top-16 z-50 w-52 rounded-xl border border-slate-300 bg-white/95 p-2 shadow-xl"
             }
           >
-            {reconnectBanner}
+            <Button
+              type="button"
+              variant="ghost"
+              className="h-9 w-full justify-start"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                leaveRoom();
+              }}
+            >
+              Leave room
+            </Button>
+            <div className={theme === "dark" ? "px-3 py-2 text-xs text-slate-300" : "px-3 py-2 text-xs text-slate-700"}>
+              Room: {roomId.slice(0, 8)}...
+            </div>
           </div>
         )}
 
         <div
-          className={`absolute z-20 w-40 overflow-hidden rounded-xl border-2 border-white/70 bg-black shadow-2xl transition-all duration-300 sm:w-52 ${
-            showNotes
-              ? "bottom-[63vh] right-4 md:bottom-24 md:right-116"
-              : "bottom-24 right-4"
+          className={`absolute z-30 overflow-hidden border-2 border-white/70 bg-black shadow-2xl transition-all duration-300 ease-out ${
+            showNotes && isDoctor
+              ? "bottom-[calc(45vh+6.75rem)] right-4 h-28 w-28 rounded-2xl md:bottom-6 md:left-96 md:h-40 md:w-60 md:rounded-xl"
+              : "bottom-24 right-4 h-28 w-28 rounded-2xl md:bottom-6 md:right-6 md:h-40 md:w-60 md:rounded-xl"
           }`}
         >
-          <video ref={localVideoRef} autoPlay playsInline muted className="h-30 w-full bg-black object-cover sm:h-36" />
+          <video ref={localVideoRef} autoPlay playsInline muted className="h-full w-full bg-black object-cover" />
           <div className="absolute bottom-2 left-2 rounded-full bg-black/70 px-2 py-0.5 text-[11px] font-medium text-white">
             You ({selfName})
           </div>
         </div>
 
-        <div className="absolute bottom-4 left-4 z-20 rounded-full bg-black/70 px-3 py-1 text-xs font-medium text-white">
+        <div className="absolute bottom-23 left-3 z-20 rounded-full bg-black/70 px-3 py-1 text-xs font-medium text-white md:bottom-6 md:left-6">
           {peerName}
           {peerMuted ? " (muted)" : ""}
           {peerVideoOff ? " (camera off)" : ""}
         </div>
 
-        <div className="pointer-events-none absolute inset-x-0 bottom-4 z-20 px-3">
-          <div className="pointer-events-auto mx-auto flex w-full max-w-xl flex-wrap items-center justify-center gap-2 rounded-2xl border border-white/20 bg-black/65 p-2.5 backdrop-blur">
-            <Button onClick={handleToggleMute} variant={isMuted ? "destructive" : "secondary"} className="h-10 min-w-[7.2rem] flex-1 sm:flex-none">
-              {isMuted ? <MicOff className="mr-2 h-4 w-4" /> : <Mic className="mr-2 h-4 w-4" />}
-              {isMuted ? "Unmute" : "Mute"}
-            </Button>
-            <Button onClick={handleToggleVideo} variant={isVideoOff ? "destructive" : "secondary"} className="h-10 min-w-[7.2rem] flex-1 sm:flex-none">
-              {isVideoOff ? <CameraOff className="mr-2 h-4 w-4" /> : <Camera className="mr-2 h-4 w-4" />}
-              {isVideoOff ? "Video On" : "Video Off"}
-            </Button>
-            <Button
-              type="button"
-              variant="secondary"
-              className="h-10 min-w-[7.2rem] flex-1 sm:flex-none"
-              onClick={() => setShowNotes((prev) => !prev)}
-            >
-              <FileText className="mr-2 h-4 w-4" />
-              {showNotes ? "Hide Notes" : "Notes"}
-            </Button>
-            <Button type="button" variant="destructive" className="h-10 min-w-[7.2rem] flex-1 sm:flex-none" onClick={endCallAsDoctor} disabled={endingCall}>
-              <PhoneOff className="mr-2 h-4 w-4" />
-              {endingCall ? "Ending..." : "End"}
-            </Button>
-          </div>
-        </div>
-
         <div
-          className={
+          className={`fixed bottom-0 z-40 border-t backdrop-blur md:bottom-4 md:rounded-2xl ${
             theme === "dark"
-              ? `absolute inset-x-0 bottom-0 z-30 h-[60vh] rounded-t-3xl border-t border-slate-700 bg-slate-900/95 p-4 backdrop-blur transition-transform duration-300 ease-out md:inset-y-0 md:left-auto md:h-auto md:w-full md:max-w-md md:rounded-none md:border-l md:border-t-0 ${showNotes ? "translate-y-0 md:translate-x-0" : "translate-y-full md:translate-x-full md:translate-y-0"}`
-              : `absolute inset-x-0 bottom-0 z-30 h-[60vh] rounded-t-3xl border-t border-slate-300 bg-white/95 p-4 backdrop-blur transition-transform duration-300 ease-out md:inset-y-0 md:left-auto md:h-auto md:w-full md:max-w-md md:rounded-none md:border-l md:border-t-0 ${showNotes ? "translate-y-0 md:translate-x-0" : "translate-y-full md:translate-x-full md:translate-y-0"}`
-          }
+              ? "left-0 right-0 border-white/15 bg-black/70 md:left-4 md:right-4"
+              : "left-0 right-0 border-slate-300 bg-white/90 md:left-4 md:right-4"
+          } ${showNotes && isDoctor ? "md:left-96" : ""} transition-all duration-300`}
         >
-          <div className="flex items-center justify-between">
-            <h2 className={theme === "dark" ? "text-base font-semibold text-slate-100" : "text-base font-semibold text-slate-900"}>
-              Consultation Notes
-            </h2>
-            <Button
-              type="button"
-              size="icon"
-              variant="outline"
-              className={theme === "dark" ? "h-9 w-9 rounded-full border-slate-700 bg-slate-800 text-slate-100 hover:bg-slate-700" : "h-9 w-9 rounded-full border-slate-300 bg-white text-slate-800 hover:bg-slate-100"}
-              onClick={() => setShowNotes(false)}
-            >
-              <X className="h-4 w-4" />
+          <div className="mx-auto flex h-20 w-full max-w-5xl items-center justify-center gap-2 px-3 md:h-16 md:gap-3">
+            <Button onClick={handleToggleMute} variant={isMuted ? "destructive" : "secondary"} size="icon" className="h-10 w-10 rounded-full md:h-9 md:w-9" aria-label={isMuted ? "Unmute" : "Mute"}>
+              {isMuted ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
             </Button>
-          </div>
+            <Button onClick={handleToggleVideo} variant={isVideoOff ? "destructive" : "secondary"} size="icon" className="h-10 w-10 rounded-full md:h-9 md:w-9" aria-label={isVideoOff ? "Turn video on" : "Turn video off"}>
+              {isVideoOff ? <CameraOff className="h-4 w-4" /> : <Camera className="h-4 w-4" />}
+            </Button>
 
-          <div className="mt-3 space-y-3">
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Write diagnosis, treatment plan, and prescription guidance..."
-              className={
-                theme === "dark"
-                  ? "h-[44vh] w-full resize-none rounded-xl border border-slate-700 bg-slate-950 p-3 text-sm text-slate-100 outline-none focus:border-sky-500 md:h-[72vh]"
-                  : "h-[44vh] w-full resize-none rounded-xl border border-slate-300 bg-slate-50 p-3 text-sm text-slate-900 outline-none focus:border-sky-500 md:h-[72vh]"
-              }
-            />
-            <Button type="button" onClick={saveNotes} disabled={savingNotes} className="h-10 w-full">
-              {savingNotes ? "Saving..." : "Save Notes"}
-            </Button>
+            {isDoctor && (
+              <Button
+                type="button"
+                variant={showNotes ? "default" : "secondary"}
+                size="icon"
+                className="h-10 w-10 rounded-full md:h-9 md:w-9"
+                onClick={() => setShowNotes((prev) => !prev)}
+                aria-label={showNotes ? "Hide notes" : "Show notes"}
+              >
+                <FileText className="h-4 w-4" />
+              </Button>
+            )}
+
+            {isDoctor && (
+              <Button type="button" variant="destructive" size="icon" className="h-10 w-10 rounded-full md:h-9 md:w-9" onClick={endCallAsDoctor} disabled={endingCall} aria-label="End consultation">
+                <PhoneOff className="h-4 w-4" />
+              </Button>
+            )}
+
+            <div className={theme === "dark" ? "ml-2 text-xs text-slate-300" : "ml-2 text-xs text-slate-700"}>{callStatus}</div>
           </div>
         </div>
+
+        {isDoctor && (
+          <div
+            className={
+              theme === "dark"
+                ? `fixed bottom-20 left-0 right-0 z-30 h-[45vh] rounded-t-3xl border-t border-slate-700 bg-slate-900/95 p-4 backdrop-blur transition-transform duration-300 ease-out md:bottom-0 md:top-14 md:w-88 md:rounded-none md:border-r md:border-t-0 ${showNotes ? "translate-y-0 md:translate-x-0" : "translate-y-full md:-translate-x-full md:translate-y-0"}`
+                : `fixed bottom-20 left-0 right-0 z-30 h-[45vh] rounded-t-3xl border-t border-slate-300 bg-white/95 p-4 backdrop-blur transition-transform duration-300 ease-out md:bottom-0 md:top-14 md:w-88 md:rounded-none md:border-r md:border-t-0 ${showNotes ? "translate-y-0 md:translate-x-0" : "translate-y-full md:-translate-x-full md:translate-y-0"}`
+            }
+          >
+            <div className="flex items-center justify-between">
+              <h2 className={theme === "dark" ? "text-base font-semibold text-slate-100" : "text-base font-semibold text-slate-900"}>
+                Consultation Notes
+              </h2>
+              <Button
+                type="button"
+                size="icon"
+                variant="outline"
+                className={theme === "dark" ? "h-8 w-8 rounded-full border-slate-700 bg-slate-800 text-slate-100" : "h-8 w-8 rounded-full border-slate-300 bg-white text-slate-800"}
+                onClick={() => setShowNotes(false)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+
+            <div className="mt-3 space-y-3">
+              <textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Write diagnosis, treatment plan, and prescription guidance..."
+                className={
+                  theme === "dark"
+                    ? "h-[30vh] w-full resize-none rounded-xl border border-slate-700 bg-slate-950 p-3 text-sm text-slate-100 outline-none focus:border-sky-500 md:h-[calc(100vh-14.5rem)]"
+                    : "h-[30vh] w-full resize-none rounded-xl border border-slate-300 bg-slate-50 p-3 text-sm text-slate-900 outline-none focus:border-sky-500 md:h-[calc(100vh-14.5rem)]"
+                }
+              />
+              <Button type="button" onClick={saveNotes} disabled={savingNotes} className="h-10 w-full">
+                {savingNotes ? "Saving..." : "Save Notes"}
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

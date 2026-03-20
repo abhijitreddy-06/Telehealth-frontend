@@ -29,6 +29,8 @@ export default function DoctorSetupPage() {
   const [rtt, setRtt] = useState<number | null>(null);
   const [errorText, setErrorText] = useState<string | null>(null);
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [isMobileDevice, setIsMobileDevice] = useState(false);
+  const [mobileJoinCountdown, setMobileJoinCountdown] = useState(0);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
@@ -90,12 +92,31 @@ export default function DoctorSetupPage() {
 
     runChecks().catch(() => {});
 
+    if (typeof window !== "undefined") {
+      const checkMobile = () => {
+        const mobileByViewport = window.matchMedia("(max-width: 1024px)").matches;
+        const mobileByUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent,
+        );
+        setIsMobileDevice(mobileByViewport || mobileByUserAgent);
+      };
+
+      checkMobile();
+      window.addEventListener("resize", checkMobile);
+
+      return () => {
+        window.removeEventListener("resize", checkMobile);
+        streamRef.current?.getTracks().forEach((track) => track.stop());
+      };
+    }
+
     return () => {
       streamRef.current?.getTracks().forEach((track) => track.stop());
     };
   }, [roomId]);
 
   const canContinue = roomValid && cameraOk && micOk;
+  const mobileJoinBlocked = isMobileDevice && mobileJoinCountdown > 0;
 
   const toggleTheme = () => {
     const nextTheme = theme === "dark" ? "light" : "dark";
@@ -106,10 +127,31 @@ export default function DoctorSetupPage() {
 
   const continueToRoom = () => {
     if (!canContinue) return;
+    if (mobileJoinBlocked) return;
     localStorage.setItem(`videoSetup:doctor:${roomId}`, "ok");
     toast.success("Setup complete. Joining secure consultation room...");
     router.push(`/doctor/video/${roomId}`);
   };
+
+  useEffect(() => {
+    if (!isMobileDevice || !canContinue || checking) {
+      setMobileJoinCountdown(0);
+      return;
+    }
+
+    setMobileJoinCountdown(3);
+    const intervalId = window.setInterval(() => {
+      setMobileJoinCountdown((prev) => {
+        if (prev <= 1) {
+          window.clearInterval(intervalId);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => window.clearInterval(intervalId);
+  }, [isMobileDevice, canContinue, checking]);
 
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-6 dark:bg-slate-950 sm:px-6 sm:py-10">
@@ -137,6 +179,12 @@ export default function DoctorSetupPage() {
             </div>
           </div>
 
+          {isMobileDevice && (
+            <div className="mt-4 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-700 dark:bg-amber-900/25 dark:text-amber-200">
+              For best consultation quality, please join using a desktop or laptop. You can still continue on mobile after a 3 second safety pause.
+            </div>
+          )}
+
           <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-black">
             <video ref={videoRef} autoPlay playsInline muted className="h-57.5 w-full object-cover sm:h-82.5" />
           </div>
@@ -152,8 +200,8 @@ export default function DoctorSetupPage() {
               {checking ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCw className="mr-2 h-4 w-4" />}
               Re-run checks
             </Button>
-            <Button type="button" onClick={continueToRoom} disabled={!canContinue || checking}>
-              Join room
+            <Button type="button" onClick={continueToRoom} disabled={!canContinue || checking || mobileJoinBlocked}>
+              {mobileJoinBlocked ? `Join room in ${mobileJoinCountdown}s` : "Join room"}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
