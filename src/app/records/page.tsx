@@ -378,7 +378,7 @@ export default function RecordsPage() {
           <div className="pointer-events-none absolute -right-20 -top-16 h-56 w-56 rounded-full bg-white/15" />
           <div className="pointer-events-none absolute -left-24 bottom-0 h-48 w-48 rounded-full bg-white/10" />
           <div className="relative">
-            <h1 className="max-w-xl text-2xl font-black leading-tight sm:text-3xl">
+            <h1 className="max-w-xl text-2xl font-black leading-tight text-white sm:text-3xl">
               Records Center
             </h1>
             <p className="mt-2 max-w-xl text-sm text-sky-100 sm:text-base">

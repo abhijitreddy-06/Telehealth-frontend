@@ -148,7 +148,7 @@ export default function PatientHomePage() {
 
         <div className="overflow-hidden rounded-2xl border border-slate-200 shadow-md dark:border-slate-700">
           <img
-            src="/images/hero-premium-healthcare.svg"
+            src="/hero-illustration.png"
             alt="Virtual consultation"
             className="h-full w-full object-cover"
           />

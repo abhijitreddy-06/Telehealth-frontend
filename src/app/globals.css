@@ -593,11 +593,11 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('/medical-pattern.svg');
+  background-image: url('/images/medical-pattern.png');
   background-repeat: repeat;
-  background-size: 520px;
+  background-size: 460px;
   background-position: center;
-  opacity: 0.04;
+  opacity: 0.05;
   z-index: -1;
   pointer-events: none;
 }
@@ -606,8 +606,8 @@
   background-image:
     radial-gradient(600px 300px at 12% 8%, rgba(255, 255, 255, 0.03), transparent 60%),
     radial-gradient(500px 250px at 88% 10%, rgba(255, 255, 255, 0.025), transparent 60%),
-    url('/medical-pattern.svg');
-  opacity: 0.05;
+    url('/images/medical-pattern.png');
+  opacity: 0.07;
 }
 
 .auth-hero-bg {
