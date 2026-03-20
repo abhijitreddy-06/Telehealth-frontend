@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { Download, Send, X } from "lucide-react";
+import { Download, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type Props = {
@@ -103,11 +103,6 @@ export default function NotesPanel({
                 Download
               </Button>
             </div>
-
-            <Button type="button" variant="secondary" className="h-10 w-full">
-              <Send className="mr-2 h-4 w-4" />
-              Send to patient
-            </Button>
           </div>
         </motion.aside>
       )}

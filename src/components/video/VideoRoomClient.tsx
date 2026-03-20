@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { io, type Socket } from "socket.io-client";
 import { toast } from "sonner";
 import { saveConsultationNotes } from "@/lib/api";
+import { Button } from "@/components/ui/button";
 import VideoCallNavbar from "@/components/video/VideoCallNavbar";
 import VideoContainer from "@/components/video/VideoContainer";
 import ControlsBar from "@/components/video/ControlsBar";
@@ -154,6 +155,7 @@ export default function VideoRoomClient({
   const [theme, setTheme] = useState<"light" | "dark">("dark");
   const [callStartedAt, setCallStartedAt] = useState<number | null>(null);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [showPrescriptionModal, setShowPrescriptionModal] = useState(false);
 
   const roleLabel = role === "doctor" ? "doctor" : "patient";
   const dashboardPath = role === "doctor" ? "/doctor/video/dashboard" : "/patient/video/dashboard";
@@ -521,9 +523,11 @@ export default function VideoRoomClient({
 
         socket.on("call-ended-by-doctor", () => {
           if (role === "user") {
-            toast.info("Doctor ended the consultation.");
+            toast.info("Doctor ended the consultation. You can download your prescription.");
+            setCallStatus("Consultation ended");
+            setPeerConnected(false);
+            setShowPrescriptionModal(true);
             cleanupConnection();
-            router.replace("/patient/video/dashboard");
           }
         });
 
@@ -616,27 +620,37 @@ export default function VideoRoomClient({
   };
 
   const downloadConsultationSummary = () => {
-    const summary = [
-      `Room: ${roomId}`,
-      `Patient: ${peerName}`,
-      `Doctor: ${selfName}`,
-      "",
-      "Clinical Notes",
-      notes || "-",
-      "",
-      "Prescription",
-      `Medicine: ${medicine || "-"}`,
-      `Dosage: ${dosage || "-"}`,
-      `Duration: ${duration || "-"}`,
-    ].join("\n");
+    fetch(`${API_BASE}/api/prescription/download/${roomId}`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        Accept: "application/pdf",
+      },
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          let message = "Unable to download prescription PDF.";
+          try {
+            const payload = (await response.json()) as { message?: string; error?: string };
+            message = payload?.message || payload?.error || message;
+          } catch {
+            // Ignore parse errors, keep default message.
+          }
+          throw new Error(message);
+        }
 
-    const blob = new Blob([summary], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `consultation-${roomId.slice(0, 8)}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `Prescription_${roomId.slice(0, 8)}.pdf`;
+        a.click();
+        URL.revokeObjectURL(url);
+      })
+      .catch((error) => {
+        const message = error instanceof Error ? error.message : "Unable to download prescription PDF.";
+        toast.error(message);
+      });
   };
 
   useEffect(() => {
@@ -746,6 +760,56 @@ export default function VideoRoomClient({
             onDosageChange={setDosage}
             onDurationChange={setDuration}
           />
+        )}
+
+        {role === "user" && showPrescriptionModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 px-4 backdrop-blur-sm">
+            <div
+              className={
+                theme === "dark"
+                  ? "w-full max-w-md rounded-2xl border border-slate-700 bg-slate-900 p-6 shadow-2xl"
+                  : "w-full max-w-md rounded-2xl border border-slate-300 bg-white p-6 shadow-2xl"
+              }
+            >
+              <h3 className={theme === "dark" ? "text-lg font-semibold text-white" : "text-lg font-semibold text-slate-900"}>
+                Consultation Completed
+              </h3>
+              <p className={theme === "dark" ? "mt-2 text-sm text-slate-300" : "mt-2 text-sm text-slate-600"}>
+                Your call has ended. Download prescription of this call.
+              </p>
+              <p className={theme === "dark" ? "mt-2 text-sm text-emerald-300" : "mt-2 text-sm text-emerald-700"}>
+                Buy all your medicines from our pharmacy.
+              </p>
+
+              <div className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                <Button type="button" onClick={downloadConsultationSummary}>
+                  Download Prescription
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => {
+                    setShowPrescriptionModal(false);
+                    router.push("/pharmacy");
+                  }}
+                >
+                  Go to Pharmacy
+                </Button>
+              </div>
+
+              <Button
+                type="button"
+                variant="outline"
+                className="mt-2 w-full"
+                onClick={() => {
+                  setShowPrescriptionModal(false);
+                  router.push("/patient/video/dashboard");
+                }}
+              >
+                Back
+              </Button>
+            </div>
+          </div>
         )}
       </div>
     </div>
