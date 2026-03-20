@@ -117,6 +117,10 @@ export default function AuthCard({ role }: AuthCardProps) {
           ? "/doctor/profile/create"
           : "/patient/profile/create";
 
+      if (typeof payload?.accessToken === "string" && payload.accessToken.length > 20) {
+        localStorage.setItem("telehealthAccessToken", payload.accessToken);
+      }
+
       router.replace(redirectPath);
       router.refresh();
       window.setTimeout(() => {

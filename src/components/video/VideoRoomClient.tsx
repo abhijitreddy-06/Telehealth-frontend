@@ -28,6 +28,7 @@ type SignalPayload = {
 const TURN_URL = process.env.NEXT_PUBLIC_TURN_URL;
 const TURN_USERNAME = process.env.NEXT_PUBLIC_TURN_USERNAME;
 const TURN_CREDENTIAL = process.env.NEXT_PUBLIC_TURN_CREDENTIAL;
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "/backend";
 
 function buildIceServers(): RTCIceServer[] {
   const servers: RTCIceServer[] = [
@@ -82,6 +83,37 @@ function resolveSocketUrl() {
   return "";
 }
 
+async function resolveSocketAuthToken(forceSessionRefresh = false): Promise<string | null> {
+  const stored = typeof window !== "undefined" ? localStorage.getItem("telehealthAccessToken") : null;
+
+  if (stored && !forceSessionRefresh) {
+    return stored;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE}/api/auth/session`, {
+      method: "GET",
+      credentials: "include",
+      headers: { Accept: "application/json" },
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      return stored;
+    }
+
+    const payload = (await response.json()) as { authenticated?: boolean; accessToken?: string };
+    if (payload?.authenticated && typeof payload.accessToken === "string" && payload.accessToken.length > 20) {
+      localStorage.setItem("telehealthAccessToken", payload.accessToken);
+      return payload.accessToken;
+    }
+  } catch {
+    // Ignore session fetch failures and fall back to locally stored token.
+  }
+
+  return stored;
+}
+
 export default function VideoRoomClient({
   role,
   roomId,
@@ -101,6 +133,7 @@ export default function VideoRoomClient({
   const mountedRef = useRef(true);
   const pendingIceCandidatesRef = useRef<RTCIceCandidateInit[]>([]);
   const creatingOfferRef = useRef(false);
+  const authRetryAttemptedRef = useRef(false);
 
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOff, setIsVideoOff] = useState(false);
@@ -308,10 +341,12 @@ export default function VideoRoomClient({
 
         setupPeerConnection(localStream);
 
+        const authToken = await resolveSocketAuthToken();
         const socket = io(resolveSocketUrl(), {
           transports: ["websocket", "polling"],
           withCredentials: true,
           timeout: 15000,
+          auth: authToken ? { token: authToken } : undefined,
         });
         socketRef.current = socket;
 
@@ -319,12 +354,14 @@ export default function VideoRoomClient({
           role,
           roomId,
           socketUrl: resolveSocketUrl(),
+          hasAuthToken: Boolean(authToken),
           apiBase: process.env.NEXT_PUBLIC_API_URL || "/backend",
           origin: typeof window !== "undefined" ? window.location.origin : "server",
           userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "unknown",
         });
 
         socket.on("connect", () => {
+          authRetryAttemptedRef.current = false;
           console.info("[video-debug] socket connected", {
             socketId: socket.id,
             role,
@@ -348,6 +385,16 @@ export default function VideoRoomClient({
           });
           const message = error?.message?.toLowerCase() || "";
           if (message.includes("authentication") || message.includes("token") || message.includes("expired")) {
+            if (!authRetryAttemptedRef.current) {
+              authRetryAttemptedRef.current = true;
+              resolveSocketAuthToken(true)
+                .then((freshToken) => {
+                  if (!freshToken || !socketRef.current) return;
+                  socketRef.current.auth = { token: freshToken };
+                  socketRef.current.connect();
+                })
+                .catch(() => {});
+            }
             toast.error("Video auth failed. Please log in again and reopen the room.");
           } else if (message.includes("cors")) {
             toast.error("Socket CORS blocked. Verify frontend URL is allowed on backend.");
