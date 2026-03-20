@@ -180,7 +180,7 @@ export default function DashboardLayout({
         <div className="border-t border-border p-4">
           <Button
             variant="ghost"
-            className="w-full justify-start text-muted-foreground hover:bg-red-50 hover:text-red-500"
+            className="w-full justify-start text-muted-foreground hover:bg-red-50 hover:text-red-500 dark:text-white"
             onClick={async () => {
               try {
                 await fetch(
@@ -219,7 +219,7 @@ export default function DashboardLayout({
                 type="button"
                 variant="outline"
                 onClick={onToggleTheme}
-                className="h-10 w-10 rounded-md border-2 border-black bg-card p-0 text-muted-foreground backdrop-blur hover:bg-secondary dark:border-white dark:text-white"
+                className="h-10 w-10 rounded-md border border-border bg-card p-0 text-muted-foreground backdrop-blur hover:bg-secondary dark:border-2 dark:border-white dark:text-white"
                 aria-label="Toggle theme"
                 title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
               >
@@ -242,7 +242,7 @@ export default function DashboardLayout({
                 <span
                   className={cn(
                     "flex h-8 w-8 items-center justify-center rounded-full text-[14px] font-bold",
-                    "bg-secondary text-primary",
+                    "bg-secondary text-primary dark:text-white",
                   )}
                 >
                   {displayInitial}
@@ -266,7 +266,7 @@ export default function DashboardLayout({
                             : "text-muted-foreground hover:text-foreground dark:text-white",
                         )}
                       >
-                        <Icon className="h-4 w-4" />
+                        <Icon className="h-4 w-4 dark:text-white" />
                         {item.label}
                       </Link>
                     );

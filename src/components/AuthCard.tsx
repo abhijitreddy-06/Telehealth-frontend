@@ -205,8 +205,8 @@ export default function AuthCard({ role }: AuthCardProps) {
                 onClick={() => handleModeChange(opt)}
                 className={`relative z-10 flex-1 rounded-lg py-2.5 text-[14px] font-semibold transition-colors duration-200 ${
                   mode === opt
-                    ? "text-sky-700 dark:text-sky-300"
-                    : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
+                    ? "text-sky-700 dark:text-white"
+                    : "text-slate-500 hover:text-slate-700 dark:text-white/85 dark:hover:text-white"
                 }`}
               >
                 {opt === "login" ? "Login" : "Sign Up"}
@@ -236,7 +236,7 @@ export default function AuthCard({ role }: AuthCardProps) {
             >
               {/* Phone */}
               <div>
-                <Label htmlFor="phone" className="text-[12px] font-bold text-slate-500 dark:text-slate-300">
+                <Label htmlFor="phone" className="text-[12px] font-bold text-slate-500 dark:text-white">
                   Phone Number
                 </Label>
                 <div className="relative mt-1">
@@ -256,7 +256,7 @@ export default function AuthCard({ role }: AuthCardProps) {
 
               {/* Password */}
               <div>
-                <Label htmlFor="password" className="text-[12px] font-bold text-slate-500 dark:text-slate-300">
+                <Label htmlFor="password" className="text-[12px] font-bold text-slate-500 dark:text-white">
                   Password
                 </Label>
                 <div className="relative mt-1">
@@ -284,7 +284,7 @@ export default function AuthCard({ role }: AuthCardProps) {
               {/* Confirm Password (signup only) */}
               {!isLogin && (
                 <div>
-                  <Label htmlFor="confirmpassword" className="text-[12px] font-bold text-slate-500 dark:text-slate-300">
+                  <Label htmlFor="confirmpassword" className="text-[12px] font-bold text-slate-500 dark:text-white">
                     Confirm Password
                   </Label>
                   <div className="relative mt-1">

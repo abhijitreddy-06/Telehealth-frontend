@@ -305,7 +305,7 @@ export default function DocVideoDashboard() {
           >
             <div className="mb-4 flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-sky-100 dark:bg-sky-500/20">
-                <Video className="h-6 w-6 text-sky-600 dark:text-sky-400" />
+                <Video className="h-6 w-6 text-sky-600 dark:text-white" />
               </div>
               <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                 Your Appointment
@@ -436,7 +436,7 @@ export default function DocVideoDashboard() {
           >
             <div className="mb-4 flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-sky-100 dark:bg-sky-500/20">
-                <Calendar className="h-6 w-6 text-sky-600 dark:text-sky-400" />
+                <Calendar className="h-6 w-6 text-sky-600 dark:text-white" />
               </div>
               <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                 List of All Appointments

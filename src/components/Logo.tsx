@@ -1,4 +1,4 @@
-import { HeartPulse } from "lucide-react";
+import { ShieldPlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface LogoProps {
@@ -34,13 +34,13 @@ export default function Logo({ className, textClassName, iconClassName, size = "
     <span className={cn("inline-flex items-center", sizing.wrapper, className)}>
       <span
         className={cn(
-          "icon-box inline-flex items-center justify-center border border-(--primary-border) dark:border-white/35",
+          "icon-box inline-flex items-center justify-center border border-(--primary-border) dark:border-white/45 dark:bg-slate-800",
           sizing.iconBox,
           iconClassName,
         )}
         aria-hidden="true"
       >
-        <HeartPulse className={cn(sizing.icon, "text-primary dark:text-white")} strokeWidth={2.1} />
+        <ShieldPlus className={cn(sizing.icon, "text-primary dark:text-white")} strokeWidth={2.1} />
       </span>
       <span className={cn("font-logo font-medium tracking-tight text-foreground", sizing.text, textClassName)}>
         Tele<span className="text-primary">Health</span>

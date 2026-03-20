@@ -198,6 +198,9 @@ export async function proxy(request: NextRequest) {
   }
 
   if (isAdminProtected) {
+    if (!session && hasAuthCookie) {
+      return NextResponse.next();
+    }
     if (!session?.authenticated) {
       return redirectTo(request, "/admin/auth");
     }

@@ -31,7 +31,7 @@ export default function AuthRolePage({
           <Logo size="lg" className="mb-2" />
           <Link
             href="/auth"
-            className="menu-item flex items-center gap-2 text-[16px] font-semibold text-sky-200 transition-colors hover:text-white"
+            className="menu-item flex items-center gap-2 text-[16px] font-semibold text-sky-700 transition-colors hover:text-primary dark:text-sky-200 dark:hover:text-white"
           >
             <ArrowLeft className="h-5 w-5" />
             Back to Role Selection
