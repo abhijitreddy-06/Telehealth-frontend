@@ -315,12 +315,37 @@ export default function VideoRoomClient({
         });
         socketRef.current = socket;
 
+        console.info("[video-debug] socket init", {
+          role,
+          roomId,
+          socketUrl: resolveSocketUrl(),
+          apiBase: process.env.NEXT_PUBLIC_API_URL || "/backend",
+          origin: typeof window !== "undefined" ? window.location.origin : "server",
+          userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "unknown",
+        });
+
         socket.on("connect", () => {
+          console.info("[video-debug] socket connected", {
+            socketId: socket.id,
+            role,
+            roomId,
+          });
           socket.emit("join-room", { roomId, role });
           setCallStatus("Joined secure room");
         });
 
         socket.on("connect_error", (error) => {
+          console.error("[video-debug] socket connect_error", {
+            role,
+            roomId,
+            socketUrl: resolveSocketUrl(),
+            message: error?.message,
+            name: error?.name,
+            description: (error as Error & { description?: unknown })?.description,
+            context: (error as Error & { context?: unknown })?.context,
+            data: (error as Error & { data?: unknown })?.data,
+            stack: error?.stack,
+          });
           const message = error?.message?.toLowerCase() || "";
           if (message.includes("authentication") || message.includes("token") || message.includes("expired")) {
             toast.error("Video auth failed. Please log in again and reopen the room.");
@@ -456,6 +481,11 @@ export default function VideoRoomClient({
         });
 
         socket.on("error", (payload: { message?: string }) => {
+          console.error("[video-debug] socket error event", {
+            role,
+            roomId,
+            payload,
+          });
           toast.error(payload?.message || "Video room error");
         });
       } catch {
