@@ -24,6 +24,11 @@ export const metadata: Metadata = {
   title: "TeleHealthx - Virtual Healthcare Solutions",
   description:
     "Modern healthcare, anytime. Book appointments and consult doctors online with secure video consultations.",
+  icons: {
+    icon: "/logoo.png",
+    shortcut: "/logoo.png",
+    apple: "/logoo.png",
+  },
 };
 
 export default function RootLayout({

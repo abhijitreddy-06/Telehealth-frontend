@@ -101,7 +101,7 @@ export default function VideoRoomClient({
   const [isVideoOff, setIsVideoOff] = useState(false);
   const [peerMuted, setPeerMuted] = useState(false);
   const [peerVideoOff, setPeerVideoOff] = useState(false);
-  const [callStatus, setCallStatus] = useState("Connecting...");
+  const [callStatus, setCallStatus] = useState("Connecting secure call...");
   const [peerConnected, setPeerConnected] = useState(false);
   const [showNotes, setShowNotes] = useState(false);
   const [notes, setNotes] = useState(defaultNotes);
@@ -313,8 +313,8 @@ export default function VideoRoomClient({
         });
 
         socket.on("connect_error", () => {
-          setReconnectBanner("Unable to reach signaling server. Retrying...");
-          setCallStatus("Reconnecting...");
+          setReconnectBanner("Signal server not reachable. Reconnecting...");
+          setCallStatus("Reconnecting securely...");
         });
 
         socket.on("doctor-joined", (payload: { message?: string }) => {
@@ -547,8 +547,8 @@ export default function VideoRoomClient({
 
   const topBarClass =
     theme === "dark"
-      ? "absolute left-3 right-3 top-3 z-20 flex items-center justify-between gap-2 rounded-xl border border-slate-700 bg-slate-900/70 p-2 backdrop-blur"
-      : "absolute left-3 right-3 top-3 z-20 flex items-center justify-between gap-2 rounded-xl border border-slate-300 bg-white/85 p-2 backdrop-blur";
+      ? "absolute left-3 right-3 top-3 z-20 flex flex-col gap-2 rounded-xl border border-slate-700 bg-slate-900/70 p-2.5 backdrop-blur sm:flex-row sm:items-center sm:justify-between"
+      : "absolute left-3 right-3 top-3 z-20 flex flex-col gap-2 rounded-xl border border-slate-300 bg-white/85 p-2.5 backdrop-blur sm:flex-row sm:items-center sm:justify-between";
 
   if (role === "user") {
     return (
@@ -557,15 +557,15 @@ export default function VideoRoomClient({
           <video ref={remoteVideoRef} autoPlay playsInline className="h-screen w-full bg-black object-cover" />
 
           <div className={topBarClass}>
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
               <ShieldCheck className="h-4 w-4 text-emerald-500" />
               <span className={theme === "dark" ? "text-xs text-slate-200" : "text-xs text-slate-700"}>
-                Patient room {roomId.slice(0, 8)}...
+                Secure patient room <span className="hidden sm:inline">{roomId.slice(0, 8)}...</span>
               </span>
               {connectionPill}
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex w-full items-center justify-end gap-2 sm:w-auto">
               <div
                 className={
                   theme === "dark"
@@ -643,15 +643,15 @@ export default function VideoRoomClient({
         <video ref={remoteVideoRef} autoPlay playsInline className="h-screen w-full bg-black object-cover" />
 
         <div className={topBarClass}>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
             <ShieldCheck className="h-4 w-4 text-emerald-500" />
             <span className={theme === "dark" ? "text-xs text-slate-200" : "text-xs text-slate-700"}>
-              Doctor room {roomId.slice(0, 8)}...
+              Secure doctor room <span className="hidden sm:inline">{roomId.slice(0, 8)}...</span>
             </span>
             {connectionPill}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex w-full items-center justify-end gap-2 sm:w-auto">
             <Button
               type="button"
               variant="outline"
@@ -724,24 +724,24 @@ export default function VideoRoomClient({
 
         <div className="pointer-events-none absolute inset-x-0 bottom-4 z-20 px-3">
           <div className="pointer-events-auto mx-auto flex w-full max-w-xl flex-wrap items-center justify-center gap-2 rounded-2xl border border-white/20 bg-black/65 p-2.5 backdrop-blur">
-            <Button onClick={handleToggleMute} variant={isMuted ? "destructive" : "secondary"} className="h-10 min-w-23">
+            <Button onClick={handleToggleMute} variant={isMuted ? "destructive" : "secondary"} className="h-10 min-w-[7.2rem] flex-1 sm:flex-none">
               {isMuted ? <MicOff className="mr-2 h-4 w-4" /> : <Mic className="mr-2 h-4 w-4" />}
               {isMuted ? "Unmute" : "Mute"}
             </Button>
-            <Button onClick={handleToggleVideo} variant={isVideoOff ? "destructive" : "secondary"} className="h-10 min-w-26.5">
+            <Button onClick={handleToggleVideo} variant={isVideoOff ? "destructive" : "secondary"} className="h-10 min-w-[7.2rem] flex-1 sm:flex-none">
               {isVideoOff ? <CameraOff className="mr-2 h-4 w-4" /> : <Camera className="mr-2 h-4 w-4" />}
               {isVideoOff ? "Video On" : "Video Off"}
             </Button>
             <Button
               type="button"
               variant="secondary"
-              className="h-10 min-w-28"
+              className="h-10 min-w-[7.2rem] flex-1 sm:flex-none"
               onClick={() => setShowNotes((prev) => !prev)}
             >
               <FileText className="mr-2 h-4 w-4" />
               {showNotes ? "Hide Notes" : "Notes"}
             </Button>
-            <Button type="button" variant="destructive" className="h-10 min-w-26" onClick={endCallAsDoctor} disabled={endingCall}>
+            <Button type="button" variant="destructive" className="h-10 min-w-[7.2rem] flex-1 sm:flex-none" onClick={endCallAsDoctor} disabled={endingCall}>
               <PhoneOff className="mr-2 h-4 w-4" />
               {endingCall ? "Ending..." : "End"}
             </Button>
