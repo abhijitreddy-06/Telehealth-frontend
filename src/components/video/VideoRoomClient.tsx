@@ -3,10 +3,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { io, type Socket } from "socket.io-client";
-import { Camera, CameraOff, FileText, Menu, Mic, MicOff, Moon, PhoneOff, Sun, Wifi, WifiOff, X } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import { saveConsultationNotes } from "@/lib/api";
+import VideoCallNavbar from "@/components/video/VideoCallNavbar";
+import VideoContainer from "@/components/video/VideoContainer";
+import ControlsBar from "@/components/video/ControlsBar";
+import NotesPanel from "@/components/video/NotesPanel";
 
 type Role = "doctor" | "user";
 
@@ -141,12 +143,17 @@ export default function VideoRoomClient({
   const [peerVideoOff, setPeerVideoOff] = useState(false);
   const [callStatus, setCallStatus] = useState("Connecting secure call...");
   const [peerConnected, setPeerConnected] = useState(false);
+  const [isSpeakerOff, setIsSpeakerOff] = useState(false);
   const [showNotes, setShowNotes] = useState(false);
   const [notes, setNotes] = useState(defaultNotes);
+  const [medicine, setMedicine] = useState("");
+  const [dosage, setDosage] = useState("");
+  const [duration, setDuration] = useState("");
   const [savingNotes, setSavingNotes] = useState(false);
   const [endingCall, setEndingCall] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("dark");
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [callStartedAt, setCallStartedAt] = useState<number | null>(null);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
   const roleLabel = role === "doctor" ? "doctor" : "patient";
   const dashboardPath = role === "doctor" ? "/doctor/video/dashboard" : "/patient/video/dashboard";
@@ -299,6 +306,7 @@ export default function VideoRoomClient({
       const state = pc.connectionState;
       if (state === "connected") {
         setPeerConnected(true);
+        setCallStartedAt(Date.now());
         toast.success("Secure call connected.");
         setCallStatus("Connected");
       }
@@ -575,11 +583,29 @@ export default function VideoRoomClient({
     socketRef.current?.emit("camera-state", { roomId, isVideoOff: nextVideoOff });
   };
 
+  const handleToggleSpeaker = () => {
+    const next = !isSpeakerOff;
+    setIsSpeakerOff(next);
+
+    if (remoteVideoRef.current) {
+      remoteVideoRef.current.muted = next;
+    }
+  };
+
   const saveNotes = async () => {
     if (role !== "doctor") return;
     setSavingNotes(true);
     try {
-      await saveConsultationNotes(roomId, notes);
+      const compiled = [
+        notes.trim(),
+        medicine.trim() ? `Medicine: ${medicine.trim()}` : "",
+        dosage.trim() ? `Dosage: ${dosage.trim()}` : "",
+        duration.trim() ? `Duration: ${duration.trim()}` : "",
+      ]
+        .filter(Boolean)
+        .join("\n");
+
+      await saveConsultationNotes(roomId, compiled || notes);
       toast.success("Consultation notes saved.");
     } catch (error) {
       const message = error instanceof Error ? error.message : "Failed to save notes.";
@@ -588,6 +614,49 @@ export default function VideoRoomClient({
       setSavingNotes(false);
     }
   };
+
+  const downloadConsultationSummary = () => {
+    const summary = [
+      `Room: ${roomId}`,
+      `Patient: ${peerName}`,
+      `Doctor: ${selfName}`,
+      "",
+      "Clinical Notes",
+      notes || "-",
+      "",
+      "Prescription",
+      `Medicine: ${medicine || "-"}`,
+      `Dosage: ${dosage || "-"}`,
+      `Duration: ${duration || "-"}`,
+    ].join("\n");
+
+    const blob = new Blob([summary], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `consultation-${roomId.slice(0, 8)}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  useEffect(() => {
+    if (!callStartedAt) {
+      setElapsedSeconds(0);
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      setElapsedSeconds(Math.max(0, Math.floor((Date.now() - callStartedAt) / 1000)));
+    }, 1000);
+
+    return () => window.clearInterval(interval);
+  }, [callStartedAt]);
+
+  const timerText = useMemo(() => {
+    const mins = Math.floor(elapsedSeconds / 60).toString().padStart(2, "0");
+    const secs = (elapsedSeconds % 60).toString().padStart(2, "0");
+    return `${mins}:${secs}`;
+  }, [elapsedSeconds]);
 
   const endCallAsDoctor = async () => {
     if (role !== "doctor") return;
@@ -611,205 +680,72 @@ export default function VideoRoomClient({
     router.replace(dashboardPath);
   };
 
-  const connectionPill = useMemo(() => {
-    if (peerConnected) {
-      return (
-        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400">
-          <Wifi className="h-3.5 w-3.5" />
-          Secure connection active
-        </div>
-      );
-    }
-
-    return (
-      <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/40 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-300">
-        <WifiOff className="h-3.5 w-3.5" />
-        Waiting for peer media
-      </div>
-    );
-  }, [peerConnected]);
-
   const isDoctor = role === "doctor";
 
   const baseShell =
     theme === "dark"
-      ? "h-screen overflow-hidden bg-slate-950 text-slate-100"
-      : "h-screen overflow-hidden bg-slate-100 text-slate-900";
-
-  const navClass =
-    theme === "dark"
-      ? "fixed left-0 right-0 top-0 z-40 border-b border-slate-800 bg-slate-950/92 backdrop-blur"
-      : "fixed left-0 right-0 top-0 z-40 border-b border-slate-200 bg-white/92 backdrop-blur";
+      ? "h-screen overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100"
+      : "h-screen overflow-hidden bg-gradient-to-br from-slate-100 via-slate-50 to-white text-slate-900";
 
   return (
     <div className={baseShell}>
       <div className="relative h-screen overflow-hidden">
-        <video ref={remoteVideoRef} autoPlay playsInline className="absolute inset-0 h-full w-full bg-black object-cover" />
+        <VideoCallNavbar
+          role={role}
+          peerName={peerName}
+          callStatus={callStatus}
+          peerConnected={peerConnected}
+          theme={theme}
+          timerText={timerText}
+          onToggleTheme={toggleTheme}
+        />
 
-        <div className={navClass}>
-          <div className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between px-3 sm:px-4">
-            <div className="flex items-center gap-2">
-              <span className={theme === "dark" ? "text-sm font-semibold tracking-wide text-white" : "text-sm font-semibold tracking-wide text-slate-900"}>
-                TeleHealthX
-              </span>
-            </div>
+        <VideoContainer
+          role={role}
+          theme={theme}
+          showNotes={showNotes}
+          selfName={selfName}
+          peerName={peerName}
+          localVideoRef={localVideoRef}
+          remoteVideoRef={remoteVideoRef}
+          peerVideoOff={peerVideoOff}
+          isVideoOff={isVideoOff}
+        />
 
-            <div className="flex items-center gap-2">
-              <div className="hidden md:block">{connectionPill}</div>
-              <div
-                className={
-                  theme === "dark"
-                    ? "hidden rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-300 sm:inline-flex"
-                    : "hidden rounded-full border border-slate-300 px-3 py-1 text-xs text-slate-700 sm:inline-flex"
-                }
-              >
-                {callStatus}
-              </div>
-
-              <Button
-                type="button"
-                size="icon"
-                variant="outline"
-                className={theme === "dark" ? "h-9 w-9 border-slate-700 bg-slate-900 text-slate-100" : "h-9 w-9 border-slate-300 bg-white text-slate-800"}
-                onClick={toggleTheme}
-              >
-                {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-              </Button>
-
-              <Button
-                type="button"
-                size="icon"
-                variant="outline"
-                className={theme === "dark" ? "h-9 w-9 border-slate-700 bg-slate-900 text-slate-100" : "h-9 w-9 border-slate-300 bg-white text-slate-800"}
-                onClick={() => setMobileMenuOpen((prev) => !prev)}
-              >
-                <Menu className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        {mobileMenuOpen && (
-          <div
-            className={
-              theme === "dark"
-                ? "fixed right-3 top-16 z-50 w-52 rounded-xl border border-slate-700 bg-slate-900/95 p-2 shadow-xl"
-                : "fixed right-3 top-16 z-50 w-52 rounded-xl border border-slate-300 bg-white/95 p-2 shadow-xl"
-            }
-          >
-            <Button
-              type="button"
-              variant="ghost"
-              className="h-9 w-full justify-start"
-              onClick={() => {
-                setMobileMenuOpen(false);
-                leaveRoom();
-              }}
-            >
-              Leave room
-            </Button>
-            <div className={theme === "dark" ? "px-3 py-2 text-xs text-slate-300" : "px-3 py-2 text-xs text-slate-700"}>
-              Room: {roomId.slice(0, 8)}...
-            </div>
-          </div>
-        )}
-
-        <div
-          className={`absolute z-30 overflow-hidden border-2 border-white/70 bg-black shadow-2xl transition-all duration-300 ease-out ${
-            showNotes && isDoctor
-              ? "bottom-[calc(45vh+6.75rem)] right-4 h-28 w-28 rounded-2xl md:bottom-6 md:left-96 md:h-40 md:w-60 md:rounded-xl"
-              : "bottom-24 right-4 h-28 w-28 rounded-2xl md:bottom-6 md:right-6 md:h-40 md:w-60 md:rounded-xl"
-          }`}
-        >
-          <video ref={localVideoRef} autoPlay playsInline muted className="h-full w-full bg-black object-cover" />
-          <div className="absolute bottom-2 left-2 rounded-full bg-black/70 px-2 py-0.5 text-[11px] font-medium text-white">
-            You ({selfName})
-          </div>
-        </div>
-
-        <div className="absolute bottom-23 left-3 z-20 rounded-full bg-black/70 px-3 py-1 text-xs font-medium text-white md:bottom-6 md:left-6">
-          {peerName}
-          {peerMuted ? " (muted)" : ""}
-          {peerVideoOff ? " (camera off)" : ""}
-        </div>
-
-        <div
-          className={`fixed bottom-0 z-40 border-t backdrop-blur md:bottom-4 md:rounded-2xl ${
-            theme === "dark"
-              ? "left-0 right-0 border-white/15 bg-black/70 md:left-4 md:right-4"
-              : "left-0 right-0 border-slate-300 bg-white/90 md:left-4 md:right-4"
-          } ${showNotes && isDoctor ? "md:left-96" : ""} transition-all duration-300`}
-        >
-          <div className="mx-auto flex h-20 w-full max-w-5xl items-center justify-center gap-2 px-3 md:h-16 md:gap-3">
-            <Button onClick={handleToggleMute} variant={isMuted ? "destructive" : "secondary"} size="icon" className="h-10 w-10 rounded-full md:h-9 md:w-9" aria-label={isMuted ? "Unmute" : "Mute"}>
-              {isMuted ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-            </Button>
-            <Button onClick={handleToggleVideo} variant={isVideoOff ? "destructive" : "secondary"} size="icon" className="h-10 w-10 rounded-full md:h-9 md:w-9" aria-label={isVideoOff ? "Turn video on" : "Turn video off"}>
-              {isVideoOff ? <CameraOff className="h-4 w-4" /> : <Camera className="h-4 w-4" />}
-            </Button>
-
-            {isDoctor && (
-              <Button
-                type="button"
-                variant={showNotes ? "default" : "secondary"}
-                size="icon"
-                className="h-10 w-10 rounded-full md:h-9 md:w-9"
-                onClick={() => setShowNotes((prev) => !prev)}
-                aria-label={showNotes ? "Hide notes" : "Show notes"}
-              >
-                <FileText className="h-4 w-4" />
-              </Button>
-            )}
-
-            {isDoctor && (
-              <Button type="button" variant="destructive" size="icon" className="h-10 w-10 rounded-full md:h-9 md:w-9" onClick={endCallAsDoctor} disabled={endingCall} aria-label="End consultation">
-                <PhoneOff className="h-4 w-4" />
-              </Button>
-            )}
-
-            <div className={theme === "dark" ? "ml-2 text-xs text-slate-300" : "ml-2 text-xs text-slate-700"}>{callStatus}</div>
-          </div>
-        </div>
+        <ControlsBar
+          role={role}
+          isMuted={isMuted}
+          isVideoOff={isVideoOff}
+          isSpeakerOff={isSpeakerOff}
+          showNotes={showNotes}
+          theme={theme}
+          onToggleMute={handleToggleMute}
+          onToggleVideo={handleToggleVideo}
+          onToggleSpeaker={handleToggleSpeaker}
+          onToggleNotes={() => setShowNotes((prev) => !prev)}
+          onLeave={leaveRoom}
+          onEndCall={endCallAsDoctor}
+          endingCall={endingCall}
+        />
 
         {isDoctor && (
-          <div
-            className={
-              theme === "dark"
-                ? `fixed bottom-20 left-0 right-0 z-30 h-[45vh] rounded-t-3xl border-t border-slate-700 bg-slate-900/95 p-4 backdrop-blur transition-transform duration-300 ease-out md:bottom-0 md:top-14 md:w-88 md:rounded-none md:border-r md:border-t-0 ${showNotes ? "translate-y-0 md:translate-x-0" : "translate-y-full md:-translate-x-full md:translate-y-0"}`
-                : `fixed bottom-20 left-0 right-0 z-30 h-[45vh] rounded-t-3xl border-t border-slate-300 bg-white/95 p-4 backdrop-blur transition-transform duration-300 ease-out md:bottom-0 md:top-14 md:w-88 md:rounded-none md:border-r md:border-t-0 ${showNotes ? "translate-y-0 md:translate-x-0" : "translate-y-full md:-translate-x-full md:translate-y-0"}`
-            }
-          >
-            <div className="flex items-center justify-between">
-              <h2 className={theme === "dark" ? "text-base font-semibold text-slate-100" : "text-base font-semibold text-slate-900"}>
-                Consultation Notes
-              </h2>
-              <Button
-                type="button"
-                size="icon"
-                variant="outline"
-                className={theme === "dark" ? "h-8 w-8 rounded-full border-slate-700 bg-slate-800 text-slate-100" : "h-8 w-8 rounded-full border-slate-300 bg-white text-slate-800"}
-                onClick={() => setShowNotes(false)}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-
-            <div className="mt-3 space-y-3">
-              <textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="Write diagnosis, treatment plan, and prescription guidance..."
-                className={
-                  theme === "dark"
-                    ? "h-[30vh] w-full resize-none rounded-xl border border-slate-700 bg-slate-950 p-3 text-sm text-slate-100 outline-none focus:border-sky-500 md:h-[calc(100vh-14.5rem)]"
-                    : "h-[30vh] w-full resize-none rounded-xl border border-slate-300 bg-slate-50 p-3 text-sm text-slate-900 outline-none focus:border-sky-500 md:h-[calc(100vh-14.5rem)]"
-                }
-              />
-              <Button type="button" onClick={saveNotes} disabled={savingNotes} className="h-10 w-full">
-                {savingNotes ? "Saving..." : "Save Notes"}
-              </Button>
-            </div>
-          </div>
+          <NotesPanel
+            open={showNotes}
+            theme={theme}
+            peerName={peerName}
+            notes={notes}
+            medicine={medicine}
+            dosage={dosage}
+            duration={duration}
+            saving={savingNotes}
+            onClose={() => setShowNotes(false)}
+            onSave={saveNotes}
+            onDownload={downloadConsultationSummary}
+            onNotesChange={setNotes}
+            onMedicineChange={setMedicine}
+            onDosageChange={setDosage}
+            onDurationChange={setDuration}
+          />
         )}
       </div>
     </div>
