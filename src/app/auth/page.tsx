@@ -1,7 +1,6 @@
 "use client";
 
 import { User, Heart } from "lucide-react";
-import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import RoleCard from "@/components/RoleCard";
@@ -10,7 +9,7 @@ import Logo from "@/components/Logo";
 
 export default function AuthPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-slate-50 dark:bg-slate-950">
+    <div className="auth-hero-bg flex min-h-screen flex-col">
       <Navbar />
 
       <motion.section

@@ -323,7 +323,7 @@ export default function UserVideoDashboardPage() {
             <div className="mt-5 space-y-3">
               {isStarted && appointment.room_id ? (
                 <Button
-                  className="w-full rounded-xl bg-sky-500 py-6 text-[15px] font-semibold text-white shadow-md shadow-sky-500/20 hover:bg-sky-600"
+                  className="w-full py-6 text-[15px] font-semibold"
                   onClick={() => router.push(`/patient/video/setup/${appointment.room_id}`)}
                 >
                   <Video className="mr-2 h-5 w-5" />
@@ -374,7 +374,7 @@ export default function UserVideoDashboardPage() {
             </p>
 
             <Button
-              className="w-full rounded-xl bg-sky-500 py-6 text-[15px] font-semibold text-white shadow-md shadow-sky-500/20 hover:bg-sky-600"
+              className="w-full py-6 text-[15px] font-semibold"
               onClick={handleDownloadPrescription}
               disabled={downloading}
             >
@@ -383,7 +383,7 @@ export default function UserVideoDashboardPage() {
               ) : (
                 <Download className="mr-2 h-5 w-5" />
               )}
-              {downloading ? "Downloading..." : "Download Recent Prescription"}
+              {downloading ? "Downloading..." : "Download Prescription"}
             </Button>
 
             {/* Instructions */}

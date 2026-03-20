@@ -2,20 +2,16 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion, type Transition } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowRight, Video, ShieldCheck, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-function fadeUp(i: number): Transition {
-  return { duration: 0.6, delay: i * 0.12, ease: [0.25, 0.46, 0.45, 0.94] };
-}
 
 export default function HeroSection() {
   return (
     <section className="content-overlay relative overflow-hidden pb-20 pt-12 lg:pt-16">
-      {/* Subtle blobs — no blur-3xl to avoid perf hit */}
-      <div className="pointer-events-none absolute -right-32 -top-32 h-100 w-100 rounded-full bg-secondary/45" />
-      <div className="pointer-events-none absolute -bottom-24 -left-24 h-87.5 w-87.5 rounded-full bg-accent/12" />
+      <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-card/70 via-card/45 to-card" />
+      <div className="pointer-events-none absolute -right-28 -top-24 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-28 -left-20 h-80 w-80 rounded-full bg-accent/12 blur-3xl" />
 
       <div className="relative z-10 mx-auto flex max-w-7xl flex-col items-center gap-12 px-6 lg:flex-row lg:gap-16">
         {/* Text */}
@@ -43,15 +39,13 @@ export default function HeroSection() {
 
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Link href="/auth">
-              <Button className="group h-13 rounded-lg bg-primary px-7 text-[16px] font-semibold text-primary-foreground shadow-lg transition-all duration-250 hover:-translate-y-0.5 hover:bg-(--primary-hover) active:translate-y-0 active:scale-100">
+              <Button className="group text-[16px] font-semibold">
                 Book Appointment
                 <ArrowRight className="ml-2 h-4.5 w-4.5 transition-transform duration-300 group-hover:translate-x-1" />
               </Button>
             </Link>
             <Link href="/auth">
-              <button className="btn-fill h-13 rounded-lg px-7 text-[16px] font-semibold">
-                Get Started
-              </button>
+              <Button variant="secondary" className="text-[16px] font-semibold">Get Started</Button>
             </Link>
           </div>
 
@@ -77,7 +71,7 @@ export default function HeroSection() {
         >
           <div className="relative animate-float overflow-hidden rounded-2xl border border-border bg-card shadow-2xl">
             <Image
-              src="/hero-illustration.png"
+              src="/heroo.png"
               alt="Doctor video consultation platform"
               width={1200}
               height={900}

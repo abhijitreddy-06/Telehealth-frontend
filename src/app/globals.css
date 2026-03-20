@@ -194,8 +194,7 @@
 .text-slate-100,
 .text-slate-50,
 .text-gray-900,
-.text-zinc-900,
-.text-white {
+.text-zinc-900 {
   color: var(--text-primary) !important;
 }
 
@@ -449,11 +448,25 @@
 }
 
 @layer components {
+  .primary-btn {
+    background: var(--primary);
+    color: #ffffff;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .primary-btn:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+  }
+
   .menu-item {
     padding: 8px 16px;
     border-radius: 6px;
     background: transparent;
-    transition: all 0.2s ease;
+    transition: background 0.2s ease;
   }
 
   .menu-item:hover {
@@ -461,9 +474,9 @@
   }
 
   .dropdown-item {
-    padding: 8px 16px;
+    padding: 10px 14px;
     border-radius: 6px;
-    transition: all 0.2s ease;
+    transition: background 0.2s ease;
   }
 
   .dropdown-item:hover {
@@ -475,7 +488,7 @@
     color: var(--primary);
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 10px 18px;
+    padding: 12px 20px;
     transition: all 0.2s ease;
   }
 
@@ -500,6 +513,17 @@
     border-radius: 12px;
   }
 
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+  }
+
   .card-surface:hover {
     transform: translateY(-4px);
   }
@@ -519,15 +543,7 @@
   button,
   [role="button"],
   [data-slot="button"] {
-    transition: all 0.2s ease;
-  }
-
-  a:hover,
-  button:hover,
-  [role="button"]:hover,
-  [data-slot="button"]:hover {
-    transform: translateY(-1px);
-    opacity: 0.95;
+    transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
   }
 }
 
@@ -556,7 +572,7 @@
   color: var(--primary);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 10px 18px;
+  padding: 12px 20px;
   transition: all 0.2s ease;
 }
 
@@ -577,11 +593,11 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('/images/medical-pattern.png');
+  background-image: url('/medical-pattern.svg');
   background-repeat: repeat;
-  background-size: 500px;
+  background-size: 520px;
   background-position: center;
-  opacity: 0.05;
+  opacity: 0.04;
   z-index: -1;
   pointer-events: none;
 }
@@ -590,8 +606,32 @@
   background-image:
     radial-gradient(600px 300px at 12% 8%, rgba(255, 255, 255, 0.03), transparent 60%),
     radial-gradient(500px 250px at 88% 10%, rgba(255, 255, 255, 0.025), transparent 60%),
-    url('/images/medical-pattern.png');
-  opacity: 0.06;
+    url('/medical-pattern.svg');
+  opacity: 0.05;
+}
+
+.auth-hero-bg {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(to bottom right, #0f172a, #1e3a8a);
+}
+
+.auth-hero-bg::before {
+  content: "";
+  position: absolute;
+  inset: -25%;
+  background:
+    radial-gradient(420px 300px at 15% 20%, rgba(45, 212, 191, 0.2), transparent 65%),
+    radial-gradient(380px 260px at 80% 15%, rgba(147, 197, 253, 0.22), transparent 62%),
+    radial-gradient(500px 360px at 55% 85%, rgba(30, 64, 175, 0.25), transparent 70%);
+  filter: blur(40px);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.auth-hero-bg > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* Content wrapper — sits above the fixed background layer */

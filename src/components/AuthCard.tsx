@@ -154,16 +154,16 @@ export default function AuthCard({ role }: AuthCardProps) {
       initial={{ opacity: 0, y: 20, scale: 0.97 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.4 }}
-      className="w-full max-w-175 overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-xl shadow-slate-200/40 dark:border-slate-700 dark:bg-slate-900 dark:shadow-slate-950/30"
+      className="card w-full max-w-175 overflow-hidden shadow-xl shadow-slate-200/40 dark:shadow-slate-950/30"
     >
       <div className="flex flex-col md:flex-row">
         {/* Left panel — info */}
-        <div className="flex flex-col justify-center bg-linear-to-br from-sky-500 to-sky-600 p-8 text-white md:w-65 md:p-10">
-          <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+        <div className="auth-hero-bg flex flex-col justify-center p-8 text-white md:w-65 md:p-10">
+          <div className="icon-box mb-6 flex h-12 w-12 items-center justify-center">
             {isDoctor ? (
-              <Stethoscope className="h-6 w-6 text-white" />
+              <Stethoscope className="h-6 w-6" />
             ) : (
-              <Heart className="h-6 w-6 text-white" />
+              <Heart className="h-6 w-6" />
             )}
           </div>
 
@@ -178,7 +178,7 @@ export default function AuthCard({ role }: AuthCardProps) {
               <h2 className="font-heading text-[24px] font-bold leading-tight">
                 {isLogin ? "Welcome Back" : "Create Your Account"}
               </h2>
-              <p className="mt-3 text-[14px] leading-relaxed text-sky-100">
+              <p className="mt-3 text-[14px] leading-relaxed text-blue-100">
                 {isLogin
                   ? "Login to continue your TeleHealthx journey."
                   : "Join our platform to connect with certified doctors."}
@@ -339,7 +339,7 @@ export default function AuthCard({ role }: AuthCardProps) {
               <Button
                 type="submit"
                 disabled={loading}
-                className="h-12 w-full rounded-xl bg-sky-500 text-[16px] font-bold text-white shadow-lg shadow-sky-500/20 transition-all duration-250 hover:-translate-y-0.5 hover:scale-[1.02] hover:bg-sky-600 hover:shadow-xl hover:shadow-sky-500/25 active:translate-y-0 active:scale-100"
+                className="h-12 w-full text-[16px] font-semibold"
               >
                 {loading ? (
                   <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />

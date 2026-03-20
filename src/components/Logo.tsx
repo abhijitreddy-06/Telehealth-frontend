@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 interface LogoProps {
@@ -13,19 +13,16 @@ export default function Logo({ className, textClassName, iconClassName, size = "
     sm: {
       wrapper: "gap-1.5",
       iconBox: "h-7 w-7",
-      icon: "h-3.5 w-3.5",
       text: "text-[18px]",
     },
     md: {
       wrapper: "gap-2",
       iconBox: "h-8 w-8",
-      icon: "h-4 w-4",
       text: "text-[22px]",
     },
     lg: {
       wrapper: "gap-2.5",
       iconBox: "h-9 w-9",
-      icon: "h-[18px] w-[18px]",
       text: "text-[24px]",
     },
   }[size];
@@ -34,13 +31,20 @@ export default function Logo({ className, textClassName, iconClassName, size = "
     <span className={cn("inline-flex items-center", sizing.wrapper, className)}>
       <span
         className={cn(
-          "icon-box inline-flex items-center justify-center border border-(--primary-border)",
+          "inline-flex items-center justify-center overflow-hidden rounded-md border border-(--primary-border) bg-card",
           sizing.iconBox,
           iconClassName,
         )}
         aria-hidden="true"
       >
-        <Plus className={sizing.icon} strokeWidth={2.5} />
+        <Image
+          src="/logoo.png"
+          alt="TeleHealthx logo mark"
+          width={64}
+          height={64}
+          className="h-full w-full object-cover"
+          priority
+        />
       </span>
       <span className={cn("font-logo font-medium tracking-tight text-foreground", sizing.text, textClassName)}>
         Tele<span className="text-primary">Health</span>

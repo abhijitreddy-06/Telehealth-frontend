@@ -144,7 +144,7 @@ export default function DocHome() {
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
               href="/doctor/video/dashboard"
-              className="inline-flex items-center gap-2 rounded-xl border border-sky-300 px-5 py-3 text-sm font-semibold text-sky-700 transition hover:bg-sky-50 dark:border-sky-500/40 dark:text-sky-300 dark:hover:bg-sky-500/10"
+              className="secondary-btn inline-flex items-center gap-2 text-sm font-semibold"
             >
               <Video className="h-4 w-4" />
               Video Consultation
@@ -154,7 +154,7 @@ export default function DocHome() {
 
         <div className="overflow-hidden rounded-2xl border border-slate-200 shadow-md dark:border-slate-700">
           <img
-            src="/images/care-virtual.svg"
+            src="/images/hero-premium-healthcare.svg"
             alt="TeleHealthx virtual consultation"
             className="h-full w-full object-cover"
           />
@@ -174,7 +174,7 @@ export default function DocHome() {
               key={item.title}
               className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-slate-700 dark:bg-slate-900"
             >
-              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-linear-to-br from-sky-500 to-sky-700 text-white">
+              <div className="icon-box mb-4 inline-flex h-12 w-12 items-center justify-center">
                 <item.icon className="h-5 w-5" />
               </div>
               <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{item.title}</h4>
@@ -215,7 +215,7 @@ export default function DocHome() {
 
           <Link
             href="/doctor/schedule"
-            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-sky-500 px-5 py-3 text-sm font-semibold text-white shadow-md shadow-sky-500/25 transition hover:bg-sky-600"
+            className="primary-btn mt-6 inline-flex items-center gap-2 text-sm font-semibold shadow-md shadow-sky-500/25"
           >
             <CalendarCheck className="h-4 w-4" />
             Schedule Now

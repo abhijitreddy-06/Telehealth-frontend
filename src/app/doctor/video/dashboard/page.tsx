@@ -389,7 +389,7 @@ export default function DocVideoDashboard() {
                   <div className="space-y-2">
                     {canJoin ? (
                       <Button
-                        className="w-full bg-sky-500 text-white hover:bg-sky-600"
+                        className="w-full"
                         onClick={() => handleJoinCall(appt.room_id as string)}
                       >
                         <Video className="mr-2 h-4 w-4" />
@@ -397,7 +397,7 @@ export default function DocVideoDashboard() {
                       </Button>
                     ) : (
                       <Button
-                        className="w-full bg-sky-500 text-white hover:bg-sky-600"
+                        className="w-full"
                         onClick={() => handleStartCall(appt.id)}
                         disabled={isStarting || !!blockReason}
                       >

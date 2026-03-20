@@ -231,8 +231,7 @@ function SignupForm() {
 
 export default function SignupPage() {
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 selection:bg-sky-200">
-      <div className="absolute top-0 w-full h-125 bg-linear-to-b from-sky-100/60 to-transparent pointer-events-none" />
+    <div className="auth-hero-bg min-h-screen flex flex-col justify-center py-12 selection:bg-sky-200 sm:px-6 lg:px-8">
 
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
@@ -243,12 +242,12 @@ export default function SignupPage() {
         <Link href="/" className="mb-6 flex cursor-pointer items-center justify-center gap-3 transition-opacity hover:opacity-80">
           <Logo size="lg" />
         </Link>
-        <h2 className="mt-4 text-center text-4xl font-extrabold text-slate-900 tracking-tight">
+        <h2 className="mt-4 text-center text-4xl font-extrabold text-white tracking-tight">
           Join us today
         </h2>
-        <p className="mt-3 text-center text-base text-slate-600 font-medium">
+        <p className="mt-3 text-center text-base text-sky-100 font-medium">
           Already have an account?{" "}
-          <Link href="/auth" className="text-sky-600 hover:text-sky-500 transition-colors font-bold hover:underline">
+          <Link href="/auth" className="text-sky-200 hover:text-white transition-colors font-bold hover:underline">
             Log in here
           </Link>
         </p>

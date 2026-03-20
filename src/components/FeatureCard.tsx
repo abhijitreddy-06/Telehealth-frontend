@@ -18,9 +18,9 @@ export default function FeatureCard({
   iconColor = "text-primary",
 }: FeatureCardProps) {
   return (
-    <div className="group rounded-2xl border border-border bg-card p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+    <div className="card group p-7 shadow-sm transition-all duration-300 hover:shadow-lg">
       <div
-        className={`mb-4 flex h-11 w-11 items-center justify-center rounded-xl ${accentColor} transition-transform duration-300 group-hover:scale-110`}
+        className={`icon-box mb-4 flex h-11 w-11 items-center justify-center ${accentColor} transition-transform duration-300 group-hover:scale-110`}
       >
         <Icon className={`h-5.5 w-5.5 ${iconColor}`} />
       </div>
