@@ -23,28 +23,25 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   title: "TeleHealthx - Virtual Healthcare Solutions",
   description:
-    "Modern healthcare, anytime. Book appointments and consult doctors online with secure video consultations.",
+    "Modern healthcare, anytime. Book appointments and consult doctors online with secure video consultations",
   icons: {
-    icon: "/logoo.png",
-    shortcut: "/logoo.png",
-    apple: "/logoo.png",
+    icon: "/logoo.png",   // main favicon
+    apple: "/logoo.png",  // iOS
   },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <body
         className={`${inter.variable} ${plusJakarta.variable} ${spaceGrotesk.variable} font-sans antialiased`}
       >
         <div className="site-background" aria-hidden="true" />
-        <div className="site-content">
-          {children}
-        </div>
+        <div className="site-content">{children}</div>
         <Toaster richColors position="top-right" />
       </body>
     </html>
