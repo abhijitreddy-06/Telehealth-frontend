@@ -29,6 +29,47 @@ export default function AdminAuthPage() {
     setTheme(initial);
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    async function guardAuthenticatedAdmin() {
+      try {
+        const res = await fetch("/api/v1/auth/session", {
+          method: "GET",
+          credentials: "include",
+          cache: "no-store",
+          headers: { Accept: "application/json" },
+        });
+
+        if (!res.ok || cancelled) return;
+
+        const payload = await res.json() as {
+          success?: boolean;
+          data?: {
+            authenticated?: boolean;
+            user?: { backendRole?: string };
+            backendRole?: string;
+          } | null;
+        };
+
+        const backendRole = payload?.data?.user?.backendRole || payload?.data?.backendRole;
+        const authenticated = Boolean(payload?.data?.authenticated);
+
+        if (authenticated && backendRole === "admin") {
+          router.replace("/admin");
+          router.refresh();
+        }
+      } catch {
+        // Ignore and allow manual sign-in.
+      }
+    }
+
+    guardAuthenticatedAdmin().catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [router]);
+
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -47,6 +88,7 @@ export default function AdminAuthPage() {
       await adminLogin(phone.trim(), password);
       toast.success("Admin login successful.");
       router.replace("/admin");
+      router.refresh();
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unable to login";
       toast.error(message);

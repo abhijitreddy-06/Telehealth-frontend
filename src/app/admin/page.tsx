@@ -53,6 +53,20 @@ export default function AdminDashboardPage() {
   }, []);
 
   useEffect(() => {
+    // Prevent navigating back to auth/pre-auth pages once admin dashboard is loaded.
+    window.history.pushState(null, "", window.location.href);
+
+    const handlePopState = () => {
+      window.history.pushState(null, "", window.location.href);
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
+  useEffect(() => {
     let cancelled = false;
 
     async function loadData() {
@@ -107,6 +121,7 @@ export default function AdminDashboardPage() {
       await logout();
     } finally {
       router.replace("/admin/auth");
+      router.refresh();
     }
   }
 
