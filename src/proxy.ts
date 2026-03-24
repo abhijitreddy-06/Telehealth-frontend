@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { getPostAuthRoute, normalizeAppRole, ROUTES, type AppRole } from "./config/routes";
 
 const isProduction = process.env.NODE_ENV === "production";
 const configuredBackend = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_SERVER_API_URL;
@@ -24,6 +25,7 @@ const patientProtectedPaths = [
   "/records",
   "/predict",
   "/patient/profile",
+  "/patient/complete-profile",
   "/patient/profile/create",
 ];
 const doctorProtectedPaths = [
@@ -32,6 +34,7 @@ const doctorProtectedPaths = [
   "/doctor/schedule",
   "/doctor/profile",
   "/doctor/past-appointments",
+  "/doctor/complete-profile",
   "/doctor/profile/create",
 ];
 const adminPublicPaths = ["/admin/auth"];
@@ -39,26 +42,33 @@ const adminProtectedPaths = ["/admin"];
 
 type SessionPayload = {
   authenticated: boolean;
-  role?: "patient" | "doctor";
+  role?: AppRole;
   backendRole?: "user" | "doctor" | "admin";
   profileComplete?: boolean;
-  redirect?: string;
-  homePath?: string;
-  profileCreatePath?: string;
 };
 
 type SessionEnvelope = {
   success: boolean;
   data: SessionPayload | null;
-  error: string | null;
-  message: string | null;
+  message: string;
   authenticated?: boolean;
-  role?: "patient" | "doctor";
+  role?: AppRole;
   backendRole?: "user" | "doctor" | "admin";
   profileComplete?: boolean;
-  redirect?: string;
-  homePath?: string;
-  profileCreatePath?: string;
+};
+
+type SessionDataPayload = {
+  authenticated?: boolean;
+  user?: {
+    userId: number;
+    role: AppRole;
+    backendRole: "user" | "doctor" | "admin";
+    profileComplete: boolean;
+  };
+  userId?: number;
+  role?: string;
+  backendRole?: "user" | "doctor" | "admin";
+  profileComplete?: boolean;
 };
 
 function matchesPath(pathname: string, routes: string[]) {
@@ -70,7 +80,7 @@ async function getSession(request: NextRequest): Promise<SessionPayload | null> 
   const timeoutId = setTimeout(() => controller.abort(), SESSION_FETCH_TIMEOUT_MS);
 
   try {
-    const response = await fetch(`${BACKEND_URL}/api/auth/session`, {
+    const response = await fetch(`${BACKEND_URL}/api/v1/auth/session`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -84,18 +94,38 @@ async function getSession(request: NextRequest): Promise<SessionPayload | null> 
     const payload = (await response.json()) as SessionEnvelope;
 
     if (payload?.success === true) {
-      if (payload.data && typeof payload.data === "object") {
-        return payload.data;
+      const sessionData = payload.data as SessionDataPayload | null;
+
+      if (sessionData && typeof sessionData === "object") {
+        if (!sessionData.authenticated) {
+          return { authenticated: false };
+        }
+
+        if (sessionData.user) {
+          return {
+            authenticated: true,
+            role: sessionData.user.role,
+            backendRole: sessionData.user.backendRole,
+            profileComplete: sessionData.user.profileComplete,
+          };
+        }
+
+        const normalizedRole = normalizeAppRole(sessionData.role);
+        if (sessionData.authenticated && normalizedRole) {
+          return {
+            authenticated: true,
+            role: normalizedRole,
+            backendRole: sessionData.backendRole,
+            profileComplete: Boolean(sessionData.profileComplete),
+          };
+        }
       }
 
       return {
         authenticated: Boolean(payload.authenticated),
-        role: payload.role,
+        role: normalizeAppRole(payload.role) || undefined,
         backendRole: payload.backendRole,
         profileComplete: payload.profileComplete,
-        redirect: payload.redirect,
-        homePath: payload.homePath,
-        profileCreatePath: payload.profileCreatePath,
       };
     }
 
@@ -105,6 +135,11 @@ async function getSession(request: NextRequest): Promise<SessionPayload | null> 
   } finally {
     clearTimeout(timeoutId);
   }
+}
+
+function resolveRoleLanding(role: AppRole | undefined, profileComplete: boolean | undefined) {
+  if (!role) return "/";
+  return getPostAuthRoute(role, Boolean(profileComplete));
 }
 
 function redirectTo(request: NextRequest, pathname: string) {
@@ -147,8 +182,8 @@ export async function proxy(request: NextRequest) {
     request.cookies.has("accessToken") || request.cookies.has("refreshToken");
 
   if (isPublicOnly) {
-    if (session?.authenticated && session.redirect) {
-      return redirectTo(request, session.redirect);
+    if (session?.authenticated) {
+      return redirectTo(request, resolveRoleLanding(session.role, session.profileComplete));
     }
     return NextResponse.next();
   }
@@ -165,16 +200,16 @@ export async function proxy(request: NextRequest) {
       return NextResponse.next();
     }
     if (!session?.authenticated) {
-      return redirectTo(request, "/auth/patient");
+      return redirectTo(request, ROUTES.patient.auth);
     }
     if (session.role !== "patient") {
-      return redirectTo(request, session.redirect || "/doctor/home");
+      return redirectTo(request, resolveRoleLanding(session.role, session.profileComplete));
     }
-    if (!session.profileComplete && pathname !== "/patient/profile/create") {
-      return redirectTo(request, session.profileCreatePath || "/patient/profile/create");
+    if (!session.profileComplete && pathname !== ROUTES.patient.profile && pathname !== "/patient/profile/create") {
+      return redirectTo(request, ROUTES.patient.profile);
     }
-    if (session.profileComplete && pathname === "/patient/profile/create") {
-      return redirectTo(request, session.homePath || "/patient/home");
+    if (session.profileComplete && (pathname === ROUTES.patient.profile || pathname === "/patient/profile/create")) {
+      return redirectTo(request, ROUTES.patient.home);
     }
     return NextResponse.next();
   }
@@ -184,17 +219,18 @@ export async function proxy(request: NextRequest) {
       return NextResponse.next();
     }
     if (!session?.authenticated) {
-      return redirectTo(request, "/auth/doctor");
+      return redirectTo(request, ROUTES.doctor.auth);
     }
     if (session.role !== "doctor") {
-      return redirectTo(request, session.redirect || "/patient/home");
+      return redirectTo(request, resolveRoleLanding(session.role, session.profileComplete));
     }
-    if (!session.profileComplete && pathname !== "/doctor/profile/create") {
-      return redirectTo(request, session.profileCreatePath || "/doctor/profile/create");
+    if (!session.profileComplete && pathname !== ROUTES.doctor.profile && pathname !== "/doctor/profile/create") {
+      return redirectTo(request, ROUTES.doctor.profile);
     }
-    if (session.profileComplete && pathname === "/doctor/profile/create") {
-      return redirectTo(request, session.homePath || "/doctor/home");
+    if (session.profileComplete && (pathname === ROUTES.doctor.profile || pathname === "/doctor/profile/create")) {
+      return redirectTo(request, ROUTES.doctor.home);
     }
+    return NextResponse.next();
   }
 
   if (isAdminProtected) {
@@ -205,7 +241,7 @@ export async function proxy(request: NextRequest) {
       return redirectTo(request, "/admin/auth");
     }
     if (session.backendRole !== "admin") {
-      return redirectTo(request, session.redirect || "/");
+      return redirectTo(request, "/");
     }
     return NextResponse.next();
   }
@@ -227,11 +263,13 @@ export const config = {
     "/records/:path*",
     "/predict/:path*",
     "/patient/profile/:path*",
+    "/patient/complete-profile/:path*",
     "/patient/profile/create/:path*",
     "/doctor/home/:path*",
     "/doctor/video/:path*",
     "/doctor/schedule/:path*",
     "/doctor/profile/:path*",
+    "/doctor/complete-profile/:path*",
     "/doctor/past-appointments/:path*",
     "/doctor/profile/create/:path*",
     "/admin/auth/:path*",

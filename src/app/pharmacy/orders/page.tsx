@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   Activity,
@@ -26,6 +27,7 @@ const patientNav: NavItem[] = [
 ];
 
 export default function PharmacyOrdersPage() {
+  const router = useRouter();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [orders, setOrders] = useState<PharmacyOrder[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,13 +42,13 @@ export default function PharmacyOrdersPage() {
         setProfile(p.profile);
         setOrders(o.orders || []);
       } catch {
-        window.location.href = "/auth/patient";
+        router.replace("/auth/patient");
       } finally {
         setLoading(false);
       }
     }
     load();
-  }, []);
+  }, [router]);
 
   const userName = profile?.full_name?.split(" ")[0] || "Patient";
   const userInitial = userName.charAt(0).toUpperCase();

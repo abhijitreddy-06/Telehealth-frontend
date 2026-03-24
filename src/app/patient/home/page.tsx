@@ -16,7 +16,8 @@ import {
 } from "lucide-react";
 import DashboardLayout, { type NavItem } from "@/components/DashboardLayout";
 import Footer from "@/components/Footer";
-import { getUserProfile, type UserProfile } from "@/lib/api";
+import { type UserProfile } from "@/lib/api";
+import { useUserProfileQuery } from "@/hooks/useUserProfileQuery";
 
 const patientNav: NavItem[] = [
   { href: "/patient/home", label: "Home", icon: Activity },
@@ -58,9 +59,9 @@ const stats = [
 ];
 
 export default function PatientHomePage() {
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  const { data, isLoading } = useUserProfileQuery();
+  const profile = (data?.profile ?? null) as UserProfile | null;
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
@@ -74,20 +75,6 @@ export default function PatientHomePage() {
     setTheme(initialTheme);
   }, []);
 
-  useEffect(() => {
-    async function loadProfile() {
-      try {
-        const data = await getUserProfile();
-        setProfile(data.profile);
-      } catch {
-        setProfile(null);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadProfile();
-  }, []);
-
   const toggleTheme = () => {
     const next = theme === "dark" ? "light" : "dark";
     document.documentElement.classList.toggle("dark", next === "dark");
@@ -98,7 +85,7 @@ export default function PatientHomePage() {
   const userName = profile?.full_name?.split(" ")[0] || "Patient";
   const userInitial = userName.charAt(0).toUpperCase();
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-slate-950">
         <Loader2 className="h-8 w-8 animate-spin text-sky-500" />

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   Activity,
@@ -33,6 +33,7 @@ const PHARMACY_FALLBACK_IMAGE = "/images/medical-pattern.png";
 
 export default function PharmacyProductPage() {
   const params = useParams<{ slug: string }>();
+  const router = useRouter();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [product, setProduct] = useState<PharmacyProduct | null>(null);
   const [reviews, setReviews] = useState<Array<{ id: number; rating: number; title?: string | null; comment?: string | null; reviewer_name?: string }>>([]);
@@ -53,13 +54,13 @@ export default function PharmacyProductPage() {
         setReviews(pr.reviews || []);
         setInWishlist(Boolean(pr.inWishlist));
       } catch {
-        window.location.href = "/auth/patient";
+        router.replace("/auth/patient");
       } finally {
         setLoading(false);
       }
     }
     load();
-  }, [params.slug]);
+  }, [params.slug, router]);
 
   const userName = profile?.full_name?.split(" ")[0] || "Patient";
   const userInitial = userName.charAt(0).toUpperCase();

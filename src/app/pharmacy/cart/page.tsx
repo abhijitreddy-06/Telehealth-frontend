@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   Activity,
@@ -31,6 +32,7 @@ const patientNav: NavItem[] = [
 ];
 
 export default function PharmacyCartPage() {
+  const router = useRouter();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [items, setItems] = useState<CartItem[]>([]);
   const [subtotal, setSubtotal] = useState(0);
@@ -50,13 +52,13 @@ export default function PharmacyCartPage() {
         setItems(c.items || []);
         setSubtotal(c.subtotal || 0);
       } catch {
-        window.location.href = "/auth/patient";
+        router.replace("/auth/patient");
       } finally {
         setLoading(false);
       }
     }
     load();
-  }, []);
+  }, [router]);
 
   const userName = profile?.full_name?.split(" ")[0] || "Patient";
   const userInitial = userName.charAt(0).toUpperCase();

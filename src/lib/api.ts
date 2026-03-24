@@ -7,8 +7,8 @@ interface RequestOptions extends Omit<RequestInit, "body"> {
 type ApiEnvelope<T = unknown> = {
   success: boolean;
   data: T | null;
-  error: string | null;
-  message: string | null;
+  message: string;
+  error?: string | null;
   [key: string]: unknown;
 };
 
@@ -18,12 +18,11 @@ function isApiEnvelope(value: unknown): value is ApiEnvelope {
       typeof value === "object" &&
       "success" in value &&
       "data" in value &&
-      "error" in value &&
       "message" in value,
   );
 }
 
-async function request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
+export async function apiRequest<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
   const { body: requestBody, headers, ...rest } = options;
 
   const res = await fetch(`${API_BASE}${endpoint}`, {
@@ -56,7 +55,7 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
 
   if (isApiEnvelope(responseBody)) {
     if (!responseBody.success) {
-      throw new ApiError(res.status, responseBody.error || responseBody.message || "Request failed");
+      throw new ApiError(res.status, responseBody.message || responseBody.error || "Request failed");
     }
 
     if (responseBody.data !== null && responseBody.data !== undefined) {
@@ -68,6 +67,8 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
 
   return responseBody as T;
 }
+
+const request = apiRequest;
 
 export class ApiError extends Error {
   constructor(

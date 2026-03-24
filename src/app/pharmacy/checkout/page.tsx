@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   Activity,
@@ -29,6 +30,7 @@ const patientNav: NavItem[] = [
 ];
 
 export default function PharmacyCheckoutPage() {
+  const router = useRouter();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [subtotal, setSubtotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -54,13 +56,13 @@ export default function PharmacyCheckoutPage() {
           name: p.profile?.full_name || "",
         }));
       } catch {
-        window.location.href = "/auth/patient";
+        router.replace("/auth/patient");
       } finally {
         setLoading(false);
       }
     }
     load();
-  }, []);
+  }, [router]);
 
   const userName = profile?.full_name?.split(" ")[0] || "Patient";
   const userInitial = userName.charAt(0).toUpperCase();
@@ -85,7 +87,7 @@ export default function PharmacyCheckoutPage() {
       });
       toast.success(orderRes.message || "Order confirmed successfully.");
       setTimeout(() => {
-        window.location.href = `/pharmacy/orders/${orderRes.order.id}`;
+        router.push(`/pharmacy/orders/${orderRes.order.id}`);
       }, 700);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to place order");

@@ -5,14 +5,19 @@ import { motion } from "framer-motion";
 import { UserPlus, FileText } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Suspense } from 'react';
 import Logo from "@/components/Logo";
+import { signup } from "@/services/auth.service";
+import { getPostAuthRoute, type AppRole } from "@/config/routes";
+import { ApiError } from "@/lib/api";
 
 function SignupForm() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const defaultTab = searchParams.get("type") === "doctor" ? "doctor" : "patient";
   
@@ -52,33 +57,19 @@ function SignupForm() {
     }
     data.phone = `+91${digitsOnly}`;
 
-    const endpoint = activeTab === "doctor" ? "/api/auth/doctor/signup" : "/api/auth/patient/signup";
+    const role = (activeTab === "doctor" ? "doctor" : "patient") as AppRole;
 
     try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        body: JSON.stringify(data),
-        redirect: "manual",
-      });
-
-      const result = await response.json().catch(() => null);
-      const payload = result && typeof result === "object" && "data" in result
-        ? (result.data as Record<string, any> | null)
-        : result;
-
-      if (!response.ok) {
-        const errMsg = result?.error || result?.details?.map((d: any) => d.message).join(", ") || "Registration failed. Please check your details.";
-        throw new Error(errMsg);
+      const user = await signup(role, data.phone, data.password, data.confirmpassword);
+      const redirect = getPostAuthRoute(user.role, Boolean(user.profileComplete));
+      router.replace(redirect);
+      router.refresh();
+    } catch (err: unknown) {
+      if (err instanceof ApiError) {
+        setError(err.message || "Registration failed. Please check your details.");
+      } else {
+        setError("Registration failed.");
       }
-
-      const redirect = typeof payload?.redirect === "string" ? payload.redirect : `/auth/${activeTab}`;
-      window.location.href = redirect;
-    } catch (err: any) {
-      setError(err.message || "Registration failed.");
       setLoading(false);
     }
   };

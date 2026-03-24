@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   Activity,
@@ -33,6 +34,7 @@ const patientNav: NavItem[] = [
 const PHARMACY_FALLBACK_IMAGE = "/images/medical-pattern.png";
 
 export default function PharmacyWishlistPage() {
+  const router = useRouter();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [items, setItems] = useState<WishlistProduct[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,8 +47,8 @@ export default function PharmacyWishlistPage() {
   };
 
   useEffect(() => {
-    load().catch(() => { window.location.href = "/auth/patient"; }).finally(() => setLoading(false));
-  }, []);
+    load().catch(() => { router.replace("/auth/patient"); }).finally(() => setLoading(false));
+  }, [router]);
 
   const userName = profile?.full_name?.split(" ")[0] || "Patient";
   const userInitial = userName.charAt(0).toUpperCase();

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   Calendar,
@@ -21,6 +21,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Logo from "@/components/Logo";
+import { useAuth } from "@/contexts/auth-context";
 
 export interface NavItem {
   href: string;
@@ -55,6 +56,8 @@ export default function DashboardLayout({
   onToggleTheme,
   footer,
 }: DashboardLayoutProps) {
+  const router = useRouter();
+  const auth = useAuth();
   const pathname = usePathname();
   const normalizedName = (userName || (role === "doctor" ? "Doctor" : "Patient")).trim();
   const normalizedNameWithoutTitle = normalizedName.replace(/^(dr\.?|doctor)\s+/i, "").trim();
@@ -183,12 +186,10 @@ export default function DashboardLayout({
             className="w-full justify-start text-muted-foreground hover:bg-red-50 hover:text-red-500 dark:text-white"
             onClick={async () => {
               try {
-                await fetch(
-                  `${process.env.NEXT_PUBLIC_API_URL || "/backend"}/api/auth/logout`,
-                  { credentials: "include" },
-                );
+                await auth.logout();
               } finally {
-                window.location.href = "/auth";
+                router.replace("/auth");
+                router.refresh();
               }
             }}
           >

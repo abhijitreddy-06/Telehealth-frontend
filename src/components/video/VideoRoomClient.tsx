@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { io, type Socket } from "socket.io-client";
 import { toast } from "sonner";
 import { saveConsultationNotes } from "@/lib/api";
+import { getSocketTokenFromSession } from "@/services/auth.service";
 import { Button } from "@/components/ui/button";
 import VideoCallNavbar from "@/components/video/VideoCallNavbar";
 import VideoContainer from "@/components/video/VideoContainer";
@@ -87,34 +88,17 @@ function resolveSocketUrl() {
 }
 
 async function resolveSocketAuthToken(forceSessionRefresh = false): Promise<string | null> {
-  const stored = typeof window !== "undefined" ? localStorage.getItem("telehealthAccessToken") : null;
-
-  if (stored && !forceSessionRefresh) {
-    return stored;
-  }
-
   try {
-    const response = await fetch(`${API_BASE}/api/auth/session`, {
-      method: "GET",
-      credentials: "include",
-      headers: { Accept: "application/json" },
-      cache: "no-store",
-    });
-
-    if (!response.ok) {
-      return stored;
-    }
-
-    const payload = (await response.json()) as { authenticated?: boolean; accessToken?: string };
-    if (payload?.authenticated && typeof payload.accessToken === "string" && payload.accessToken.length > 20) {
-      localStorage.setItem("telehealthAccessToken", payload.accessToken);
-      return payload.accessToken;
+    // Socket auth is cookie-first; token is optional and fetched dynamically from session when available.
+    const token = await getSocketTokenFromSession();
+    if (token && token.length > 20) {
+      return token;
     }
   } catch {
-    // Ignore session fetch failures and fall back to locally stored token.
+    // Ignore token lookup failures and fall back to cookie-based auth.
   }
 
-  return stored;
+  return null;
 }
 
 export default function VideoRoomClient({

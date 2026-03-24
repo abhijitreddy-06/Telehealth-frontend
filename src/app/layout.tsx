@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
 import { Toaster } from "sonner";
+import AppProviders from "@/components/providers/AppProviders";
 import "./globals.css";
 
 const inter = Inter({
@@ -40,9 +41,11 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${plusJakarta.variable} ${spaceGrotesk.variable} font-sans antialiased`}
       >
-        <div className="site-background" aria-hidden="true" />
-        <div className="site-content">{children}</div>
-        <Toaster richColors position="top-right" />
+        <AppProviders>
+          <div className="site-background" aria-hidden="true" />
+          <div className="site-content">{children}</div>
+          <Toaster richColors position="top-right" />
+        </AppProviders>
       </body>
     </html>
   );

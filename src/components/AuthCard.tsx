@@ -16,6 +16,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@/contexts/auth-context";
+import { resolvePostLoginRoute } from "@/services/auth.service";
+import { ApiError } from "@/lib/api";
 
 type AuthMode = "login" | "signup";
 type Role = "patient" | "doctor";
@@ -26,6 +29,7 @@ interface AuthCardProps {
 
 export default function AuthCard({ role }: AuthCardProps) {
   const router = useRouter();
+  const auth = useAuth();
   const [mode, setMode] = useState<AuthMode>("login");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -71,72 +75,25 @@ export default function AuthCard({ role }: AuthCardProps) {
       }
     }
 
-    let endpoint: string;
-    if (isLogin) {
-      endpoint = isDoctor ? "/api/auth/doctor/login" : "/api/auth/patient/login";
-    } else {
-      endpoint = isDoctor ? "/api/auth/doctor/signup" : "/api/auth/patient/signup";
-    }
-
-    let timeoutId: number | null = null;
     try {
-      const controller = new AbortController();
-      timeoutId = window.setTimeout(() => controller.abort(), 70000);
+      const authUser = isLogin
+        ? await auth.login(role, data.phone, data.password)
+        : await auth.signup(role, data.phone, data.password, data.confirmpassword);
 
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        body: JSON.stringify(data),
-        credentials: "include",
-        cache: "no-store",
-        signal: controller.signal,
-      });
-
-      const contentType = response.headers.get("content-type") || "";
-      const result = contentType.includes("application/json")
-        ? await response.json().catch(() => null)
-        : null;
-
-      const payload = result && typeof result === "object" && "data" in result
-        ? (result.data as Record<string, any> | null)
-        : result;
-
-      if (!response.ok) {
-        throw new Error(
-          result?.error || result?.details?.map((d: any) => d.message).join(", ") ||
-            (isLogin ? "Invalid credentials." : "Registration failed.")
-        );
-      }
-
-      const redirectPath = typeof payload?.redirect === "string"
-        ? payload.redirect
-        : role === "doctor"
-          ? "/doctor/profile/create"
-          : "/patient/profile/create";
-
-      if (typeof payload?.accessToken === "string" && payload.accessToken.length > 20) {
-        localStorage.setItem("telehealthAccessToken", payload.accessToken);
-      }
+      const redirectPath = resolvePostLoginRoute(authUser);
+      await auth.refreshSession();
 
       router.replace(redirectPath);
       router.refresh();
-      window.setTimeout(() => {
-        window.location.assign(redirectPath);
-      }, 350);
-    } catch (err: any) {
-      if (err?.name === "AbortError") {
+    } catch (err: unknown) {
+      if (err instanceof ApiError) {
+        setError(err.message || (isLogin ? "Invalid credentials." : "Registration failed."));
+      } else if (err instanceof Error && err.name === "AbortError") {
         setError("Server is waking up. Please wait a moment and try again.");
       } else {
-        setError(err.message || "Something went wrong.");
+        setError("Something went wrong.");
       }
       setLoading(false);
-    } finally {
-      if (timeoutId !== null) {
-        window.clearTimeout(timeoutId);
-      }
     }
   };
 
