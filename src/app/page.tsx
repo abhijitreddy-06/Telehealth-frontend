@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import FeatureCard from "@/components/FeatureCard";
@@ -15,6 +16,7 @@ import {
   Star,
   Quote,
 } from "lucide-react";
+import { siteUrl } from "@/lib/seo";
 
 const features = [
   {
@@ -89,6 +91,24 @@ const testimonials = [
   },
 ];
 
+const faqItems = [
+  {
+    question: "How do online doctor consultations work on TeleHealthx?",
+    answer:
+      "Create an account, select a doctor, choose an available time slot, and join a secure video consultation from your device.",
+  },
+  {
+    question: "Is TeleHealthx suitable for emergency medical situations?",
+    answer:
+      "TeleHealthx supports non-emergency care and follow-ups. For severe or life-threatening symptoms, contact local emergency services immediately.",
+  },
+  {
+    question: "Can I get digital prescriptions after consultation?",
+    answer:
+      "Yes. Doctors can issue digital prescriptions after clinical review, and you can use connected pharmacy workflows where available.",
+  },
+];
+
 const sectionAnim = {
   initial: { opacity: 0, y: 30 },
   whileInView: { opacity: 1, y: 0 },
@@ -97,9 +117,36 @@ const sectionAnim = {
 };
 
 export default function Home() {
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqItems.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: `${siteUrl}/`,
+      },
+    ],
+  };
+
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 dark:bg-slate-950">
       <Navbar />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <HeroSection />
 
       {/* Features */}
@@ -185,6 +232,56 @@ export default function Home() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </motion.section>
+
+      <motion.section {...sectionAnim} className="content-overlay py-24">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mb-10 text-center">
+            <span className="mb-3 inline-block text-[13px] font-bold uppercase tracking-wider text-sky-600">
+              Frequently Asked Questions
+            </span>
+            <h2 className="font-heading text-[36px] font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-[40px]">
+              Answers about online care and virtual appointments
+            </h2>
+          </div>
+          <div className="mx-auto grid max-w-4xl gap-5">
+            {faqItems.map((item) => (
+              <article
+                key={item.question}
+                className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900"
+              >
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{item.question}</h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-slate-600 dark:text-slate-300">{item.answer}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+
+      <motion.section {...sectionAnim} className="content-overlay pb-24">
+        <div className="mx-auto max-w-5xl rounded-2xl border border-slate-200/80 bg-white p-8 shadow-sm dark:border-slate-700 dark:bg-slate-900 sm:p-10">
+          <h2 className="font-heading text-2xl font-bold text-slate-900 dark:text-slate-100 sm:text-3xl">
+            Explore healthcare services, support, and secure access
+          </h2>
+          <p className="mt-3 text-[16px] leading-relaxed text-slate-600 dark:text-slate-300">
+            TeleHealthx helps patients and doctors connect through virtual healthcare, appointment scheduling, secure records,
+            and digital prescriptions. Visit core pages below for a complete overview.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3 text-sm font-semibold">
+            <Link href="/services" className="rounded-full bg-sky-100 px-4 py-2 text-sky-700 hover:bg-sky-200">
+              View Services
+            </Link>
+            <Link href="/contact" className="rounded-full bg-emerald-100 px-4 py-2 text-emerald-700 hover:bg-emerald-200">
+              Contact Support
+            </Link>
+            <Link href="/auth" className="rounded-full bg-violet-100 px-4 py-2 text-violet-700 hover:bg-violet-200">
+              Login Portal
+            </Link>
+            <Link href="/signup" className="rounded-full bg-amber-100 px-4 py-2 text-amber-700 hover:bg-amber-200">
+              Create Account
+            </Link>
           </div>
         </div>
       </motion.section>

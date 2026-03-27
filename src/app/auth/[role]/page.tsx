@@ -1,6 +1,4 @@
-"use client";
-
-import { use } from "react";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -8,15 +6,16 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AuthCard from "@/components/AuthCard";
 import Logo from "@/components/Logo";
+import { buildPageMetadata } from "@/lib/seo";
 
 type Role = "patient" | "doctor";
 
 export default function AuthRolePage({
   params,
 }: {
-  params: Promise<{ role: string }>;
+  params: { role: string };
 }) {
-  const { role } = use(params);
+  const { role } = params;
 
   if (role !== "patient" && role !== "doctor") {
     notFound();
@@ -46,4 +45,35 @@ export default function AuthRolePage({
       <Footer />
     </div>
   );
+}
+
+export function generateMetadata({
+  params,
+}: {
+  params: { role: string };
+}): Metadata {
+  if (params.role === "patient") {
+    return buildPageMetadata({
+      title: "Patient Login for TeleHealthx Doctor Consult Platform",
+      description:
+        "Patient login for TeleHealthx to book doctor appointments, join secure video consultations, and access digital prescriptions and health records.",
+      path: "/auth/patient",
+    });
+  }
+
+  if (params.role === "doctor") {
+    return buildPageMetadata({
+      title: "Doctor Login for TeleHealthx Consultation Dashboard",
+      description:
+        "Doctor login for TeleHealthx to manage schedules, virtual consultations, patient interactions, and prescription workflows securely online.",
+      path: "/auth/doctor",
+    });
+  }
+
+  return {
+    robots: {
+      index: false,
+      follow: false,
+    },
+  };
 }

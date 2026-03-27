@@ -16,11 +16,29 @@ if (isProduction && configuredBackend && configuredBackend.startsWith("http://")
 
 const BACKEND = (configuredBackend || "http://localhost:10000").replace(/\/$/, "");
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const csp = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "img-src 'self' data: blob: https:",
+  "font-src 'self' https://fonts.gstatic.com data:",
+  "connect-src 'self' https: wss:",
+  "frame-src 'self' https://www.google.com",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+  "upgrade-insecure-requests",
+].join("; ");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   turbopack: {
     root: __dirname,
+  },
+  poweredByHeader: false,
+  images: {
+    formats: ["image/avif", "image/webp"],
   },
   async rewrites() {
     return [
@@ -29,6 +47,31 @@ const nextConfig = {
 
       // Catch-all for /api/* routes.
       { source: "/api/:path*", destination: `${BACKEND}/api/:path*` },
+    ];
+  },
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          {
+            key: "Content-Security-Policy",
+            value: csp,
+          },
+          {
+            key: "Referrer-Policy",
+            value: "strict-origin-when-cross-origin",
+          },
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff",
+          },
+          {
+            key: "X-Frame-Options",
+            value: "DENY",
+          },
+        ],
+      },
     ];
   },
 };
