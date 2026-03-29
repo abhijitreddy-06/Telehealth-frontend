@@ -589,25 +589,46 @@
 /* Global medical background pattern — dedicated fixed layer */
 .site-background {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('/images/medical-pattern.png');
-  background-repeat: repeat;
-  background-size: 320px;
-  background-position: center;
-  opacity: 0.1;
+  inset: 0;
+  overflow: hidden;
   z-index: 0;
   pointer-events: none;
 }
 
+.site-background::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url('/images/medical-pattern.png');
+  background-repeat: repeat;
+  background-size: 300px;
+  background-position: center;
+  opacity: 0.12;
+}
+
+.site-background::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(72% 46% at 50% 32%, rgba(248, 250, 252, 0.86) 0%, rgba(248, 250, 252, 0.58) 42%, rgba(248, 250, 252, 0.24) 70%, rgba(248, 250, 252, 0.06) 100%),
+    radial-gradient(64% 38% at 50% 84%, rgba(248, 250, 252, 0.72) 0%, rgba(248, 250, 252, 0.12) 72%);
+}
+
 .dark .site-background {
-  background-image:
-    radial-gradient(600px 300px at 12% 8%, rgba(255, 255, 255, 0.03), transparent 60%),
-    radial-gradient(500px 250px at 88% 10%, rgba(255, 255, 255, 0.025), transparent 60%),
-    url('/images/medical-pattern.png');
-  opacity: 0.14;
+  background:
+    radial-gradient(620px 320px at 10% 8%, rgba(255, 255, 255, 0.045), transparent 60%),
+    radial-gradient(560px 280px at 90% 12%, rgba(255, 255, 255, 0.04), transparent 62%);
+}
+
+.dark .site-background::before {
+  opacity: 0.16;
+}
+
+.dark .site-background::after {
+  background:
+    radial-gradient(72% 46% at 50% 32%, rgba(2, 6, 23, 0.9) 0%, rgba(2, 6, 23, 0.66) 42%, rgba(2, 6, 23, 0.24) 72%, rgba(2, 6, 23, 0.08) 100%),
+    radial-gradient(64% 38% at 50% 84%, rgba(2, 6, 23, 0.8) 0%, rgba(2, 6, 23, 0.14) 72%);
 }
 
 .auth-hero-bg {
