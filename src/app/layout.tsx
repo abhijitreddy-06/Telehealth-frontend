@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
 import { Toaster } from "sonner";
 import AppProviders from "@/components/providers/AppProviders";
+import ScopedMedicalPattern from "@/components/layout/ScopedMedicalPattern";
 import { defaultOgImage, siteName, siteUrl } from "@/lib/seo";
 import "./globals.css";
 
@@ -124,7 +125,7 @@ export default function RootLayout({
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
           />
-          <div className="site-background" aria-hidden="true" />
+          <ScopedMedicalPattern />
           <div className="site-content">{children}</div>
           <Toaster richColors position="top-right" />
         </AppProviders>
