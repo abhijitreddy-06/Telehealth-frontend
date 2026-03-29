@@ -603,7 +603,8 @@
   background-repeat: repeat;
   background-size: 300px;
   background-position: center;
-  opacity: 0.12;
+  opacity: 0.2;
+  mix-blend-mode: multiply;
 }
 
 .site-background::after {
@@ -611,8 +612,8 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(72% 46% at 50% 32%, rgba(248, 250, 252, 0.86) 0%, rgba(248, 250, 252, 0.58) 42%, rgba(248, 250, 252, 0.24) 70%, rgba(248, 250, 252, 0.06) 100%),
-    radial-gradient(64% 38% at 50% 84%, rgba(248, 250, 252, 0.72) 0%, rgba(248, 250, 252, 0.12) 72%);
+    radial-gradient(72% 46% at 50% 32%, rgba(248, 250, 252, 0.74) 0%, rgba(248, 250, 252, 0.42) 42%, rgba(248, 250, 252, 0.16) 70%, rgba(248, 250, 252, 0.03) 100%),
+    radial-gradient(64% 38% at 50% 84%, rgba(248, 250, 252, 0.62) 0%, rgba(248, 250, 252, 0.08) 72%);
 }
 
 .dark .site-background {
@@ -622,13 +623,14 @@
 }
 
 .dark .site-background::before {
-  opacity: 0.16;
+  opacity: 0.24;
+  mix-blend-mode: screen;
 }
 
 .dark .site-background::after {
   background:
-    radial-gradient(72% 46% at 50% 32%, rgba(2, 6, 23, 0.9) 0%, rgba(2, 6, 23, 0.66) 42%, rgba(2, 6, 23, 0.24) 72%, rgba(2, 6, 23, 0.08) 100%),
-    radial-gradient(64% 38% at 50% 84%, rgba(2, 6, 23, 0.8) 0%, rgba(2, 6, 23, 0.14) 72%);
+    radial-gradient(72% 46% at 50% 32%, rgba(2, 6, 23, 0.82) 0%, rgba(2, 6, 23, 0.52) 42%, rgba(2, 6, 23, 0.18) 72%, rgba(2, 6, 23, 0.05) 100%),
+    radial-gradient(64% 38% at 50% 84%, rgba(2, 6, 23, 0.7) 0%, rgba(2, 6, 23, 0.1) 72%);
 }
 
 .auth-hero-bg {

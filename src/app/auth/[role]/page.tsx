@@ -10,12 +10,12 @@ import { buildPageMetadata } from "@/lib/seo";
 
 type Role = "patient" | "doctor";
 
-export default function AuthRolePage({
+export default async function AuthRolePage({
   params,
 }: {
-  params: { role: string };
+  params: Promise<{ role: string }>;
 }) {
-  const { role } = params;
+  const { role } = await params;
 
   if (role !== "patient" && role !== "doctor") {
     notFound();
@@ -47,12 +47,14 @@ export default function AuthRolePage({
   );
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
-  params: { role: string };
-}): Metadata {
-  if (params.role === "patient") {
+  params: Promise<{ role: string }>;
+}): Promise<Metadata> {
+  const { role } = await params;
+
+  if (role === "patient") {
     return buildPageMetadata({
       title: "Patient Login for TeleHealthx Doctor Consult Platform",
       description:
@@ -61,7 +63,7 @@ export function generateMetadata({
     });
   }
 
-  if (params.role === "doctor") {
+  if (role === "doctor") {
     return buildPageMetadata({
       title: "Doctor Login for TeleHealthx Consultation Dashboard",
       description:

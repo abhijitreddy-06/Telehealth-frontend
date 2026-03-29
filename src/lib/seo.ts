@@ -4,8 +4,7 @@ const FALLBACK_SITE_URL = "https://telehealthx.vercel.app";
 
 export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || FALLBACK_SITE_URL).replace(/\/$/, "");
 export const siteName = "TeleHealthx";
-export const imageurl = "A:/TeleHealth Production/telehealth-frontend/src/lib/image.png"
-export const defaultOgImage = `${siteUrl}${imageurl}`;
+export const defaultOgImage = `${siteUrl}/image.png`;
 
 type PageMetaInput = {
   title: string;
