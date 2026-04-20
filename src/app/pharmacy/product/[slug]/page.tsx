@@ -8,7 +8,6 @@ import {
   Calendar,
   FileText,
   Pill,
-  Stethoscope,
   Video,
   Loader2,
   ShoppingCart,
@@ -26,7 +25,6 @@ const patientNav: NavItem[] = [
   { href: "/patient/video/dashboard", label: "Video Consult", icon: Video },
   { href: "/pharmacy", label: "Pharmacy", icon: Pill },
   { href: "/records", label: "My Records", icon: FileText },
-  { href: "/predict", label: "AI Pre Advice", icon: Stethoscope },
 ];
 
 const PHARMACY_FALLBACK_IMAGE = "/images/medical-pattern.png";

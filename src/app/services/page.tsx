@@ -17,15 +17,17 @@ const services = [
   {
     icon: Video,
     title: "Video Consultation",
-    description: "Connect face-to-face with certified doctors through crystal-clear HD video calls.",
+    description:
+      "Connect face-to-face with certified doctors through crystal-clear HD video calls.",
     href: "/auth",
     accentColor: "bg-sky-50",
     iconColor: "text-sky-600",
   },
   {
     icon: Brain,
-    title: "AI Symptom Checker",
-    description: "Describe your symptoms and let our AI engine provide instant preliminary analysis.",
+    title: "Pre-Visit Guidance",
+    description:
+      "Share your concerns before consultation to help doctors prepare and respond faster.",
     href: "/auth",
     accentColor: "bg-violet-50",
     iconColor: "text-violet-600",
@@ -33,7 +35,8 @@ const services = [
   {
     icon: Pill,
     title: "Prescription Support",
-    description: "Receive digital prescriptions instantly after your consultation.",
+    description:
+      "Receive digital prescriptions instantly after your consultation.",
     href: "/auth",
     accentColor: "bg-cyan-50",
     iconColor: "text-cyan-600",
@@ -41,7 +44,8 @@ const services = [
   {
     icon: CalendarCheck,
     title: "Smart Appointments",
-    description: "See real-time doctor availability and book appointments in seconds.",
+    description:
+      "See real-time doctor availability and book appointments in seconds.",
     href: "/auth",
     accentColor: "bg-amber-50",
     iconColor: "text-amber-600",
@@ -49,7 +53,8 @@ const services = [
   {
     icon: Stethoscope,
     title: "Specialist Referrals",
-    description: "Get connected with verified specialists across every discipline.",
+    description:
+      "Get connected with verified specialists across every discipline.",
     href: "/auth",
     accentColor: "bg-emerald-50",
     iconColor: "text-emerald-600",
@@ -57,7 +62,8 @@ const services = [
   {
     icon: HeartPulse,
     title: "Medical Records",
-    description: "All your records securely stored and accessible anytime through our vault.",
+    description:
+      "All your records securely stored and accessible anytime through our vault.",
     href: "/auth",
     accentColor: "bg-rose-50",
     iconColor: "text-rose-600",
@@ -84,7 +90,7 @@ export default function ServicesPage() {
               Comprehensive Digital Healthcare
             </h1>
             <p className="mx-auto mt-3 max-w-2xl text-[17px] leading-relaxed text-slate-500 dark:text-slate-300">
-              From video consultations to AI-driven diagnostics, everything you need.
+              From video consultations to pharmacy support, everything you need.
             </p>
           </div>
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">

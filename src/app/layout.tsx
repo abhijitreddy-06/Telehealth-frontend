@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     template: "%s | TeleHealthx",
   },
   description:
-    "Book online doctor consultations, secure video appointments, AI symptom pre-checks, and e-pharmacy support with TeleHealthx digital healthcare.",
+    "Book online doctor consultations, secure video appointments, and e-pharmacy support with TeleHealthx digital healthcare.",
   alternates: {
     canonical: "/",
   },
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     url: siteUrl,
     title: "TeleHealthx Online Doctor Consultations & e-Pharmacy",
     description:
-      "Book online doctor consultations, secure video appointments, AI symptom pre-checks, and e-pharmacy support with TeleHealthx digital healthcare.",
+      "Book online doctor consultations, secure video appointments, and e-pharmacy support with TeleHealthx digital healthcare.",
     images: [
       {
         url: defaultOgImage,
@@ -65,15 +65,15 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "TeleHealthx Online Doctor Consultations & e-Pharmacy",
     description:
-      "Book online doctor consultations, secure video appointments, AI symptom pre-checks, and e-pharmacy support with TeleHealthx digital healthcare.",
+      "Book online doctor consultations, secure video appointments, and e-pharmacy support with TeleHealthx digital healthcare.",
     images: [defaultOgImage],
   },
   verification: {
     google: "3hK4VzBvvznlnNArayPpCpNj86_JnogHro5uq-Rf1RY",
   },
   icons: {
-    icon: "/logoo.png",   // main favicon
-    apple: "/logoo.png",  // iOS
+    icon: "/logoo.png", // main favicon
+    apple: "/logoo.png", // iOS
   },
 };
 
@@ -119,7 +119,9 @@ export default function RootLayout({
         <AppProviders>
           <script
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(organizationSchema),
+            }}
           />
           <script
             type="application/ld+json"

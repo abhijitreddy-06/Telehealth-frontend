@@ -4,9 +4,9 @@ import BreadcrumbJsonLd from "@/components/seo/BreadcrumbJsonLd";
 import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Online Healthcare Services: Video, AI, Pharmacy Support",
+  title: "Online Healthcare Services: Video and Pharmacy Support",
   description:
-    "Explore TeleHealthx services including video doctor consultations, AI symptom pre-checks, e-prescriptions, specialist referrals, and secure health records.",
+    "Explore TeleHealthx services including video doctor consultations, e-prescriptions, specialist referrals, and secure health records.",
   path: "/services",
 });
 

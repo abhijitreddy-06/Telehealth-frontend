@@ -50,7 +50,6 @@ const patientNav: NavItem[] = [
   { href: "/patient/video/dashboard", label: "Video Consult", icon: Video },
   { href: "/pharmacy", label: "Pharmacy", icon: Pill },
   { href: "/records", label: "My Records", icon: FileText },
-  { href: "/predict", label: "AI Pre Advice", icon: Stethoscope },
 ];
 
 const fadeUp = {

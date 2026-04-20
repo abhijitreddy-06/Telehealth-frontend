@@ -8,7 +8,6 @@ import {
   Calendar,
   FileText,
   Pill,
-  Stethoscope,
   Video,
   Package,
   Loader2,
@@ -23,7 +22,6 @@ const patientNav: NavItem[] = [
   { href: "/patient/video/dashboard", label: "Video Consult", icon: Video },
   { href: "/pharmacy", label: "Pharmacy", icon: Pill },
   { href: "/records", label: "My Records", icon: FileText },
-  { href: "/predict", label: "AI Pre Advice", icon: Stethoscope },
 ];
 
 export default function PharmacyOrdersPage() {

@@ -1,19 +1,34 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { getPostAuthRoute, normalizeAppRole, ROUTES, type AppRole } from "./config/routes";
+import {
+  getPostAuthRoute,
+  normalizeAppRole,
+  ROUTES,
+  type AppRole,
+} from "./config/routes";
 
 const isProduction = process.env.NODE_ENV === "production";
-const configuredBackend = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_SERVER_API_URL;
+const configuredBackend =
+  process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_SERVER_API_URL;
 
 if (isProduction && !configuredBackend) {
-  throw new Error("Missing backend API URL in production. Set NEXT_PUBLIC_API_URL or NEXT_SERVER_API_URL.");
+  throw new Error(
+    "Missing backend API URL in production. Set NEXT_PUBLIC_API_URL or NEXT_SERVER_API_URL.",
+  );
 }
 
-if (isProduction && configuredBackend && configuredBackend.startsWith("http://")) {
+if (
+  isProduction &&
+  configuredBackend &&
+  configuredBackend.startsWith("http://")
+) {
   throw new Error("In production, backend API URL must use HTTPS.");
 }
 
-const BACKEND_URL = (configuredBackend || "http://localhost:10000").replace(/\/$/, "");
+const BACKEND_URL = (configuredBackend || "http://localhost:10000").replace(
+  /\/$/,
+  "",
+);
 const SESSION_FETCH_TIMEOUT_MS = 70000;
 
 const publicOnlyPaths = ["/", "/services", "/contact", "/auth", "/signup"];
@@ -23,7 +38,6 @@ const patientProtectedPaths = [
   "/patient/video",
   "/pharmacy",
   "/records",
-  "/predict",
   "/patient/profile",
   "/patient/complete-profile",
   "/patient/profile/create",
@@ -72,12 +86,19 @@ type SessionDataPayload = {
 };
 
 function matchesPath(pathname: string, routes: string[]) {
-  return routes.some((route) => pathname === route || pathname.startsWith(`${route}/`));
+  return routes.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`),
+  );
 }
 
-async function getSession(request: NextRequest): Promise<SessionPayload | null> {
+async function getSession(
+  request: NextRequest,
+): Promise<SessionPayload | null> {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), SESSION_FETCH_TIMEOUT_MS);
+  const timeoutId = setTimeout(
+    () => controller.abort(),
+    SESSION_FETCH_TIMEOUT_MS,
+  );
 
   try {
     const response = await fetch(`${BACKEND_URL}/api/v1/auth/session`, {
@@ -137,7 +158,10 @@ async function getSession(request: NextRequest): Promise<SessionPayload | null> 
   }
 }
 
-function resolveRoleLanding(role: AppRole | undefined, profileComplete: boolean | undefined) {
+function resolveRoleLanding(
+  role: AppRole | undefined,
+  profileComplete: boolean | undefined,
+) {
   if (!role) return "/";
   return getPostAuthRoute(role, Boolean(profileComplete));
 }
@@ -167,13 +191,20 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const isPublicOnly = matchesPath(pathname, publicOnlyPaths) || pathname.startsWith("/auth/");
+  const isPublicOnly =
+    matchesPath(pathname, publicOnlyPaths) || pathname.startsWith("/auth/");
   const isAdminPublic = matchesPath(pathname, adminPublicPaths);
   const isPatientProtected = matchesPath(pathname, patientProtectedPaths);
   const isDoctorProtected = matchesPath(pathname, doctorProtectedPaths);
   const isAdminProtected = matchesPath(pathname, adminProtectedPaths);
 
-  if (!isPublicOnly && !isAdminPublic && !isPatientProtected && !isDoctorProtected && !isAdminProtected) {
+  if (
+    !isPublicOnly &&
+    !isAdminPublic &&
+    !isPatientProtected &&
+    !isDoctorProtected &&
+    !isAdminProtected
+  ) {
     return NextResponse.next();
   }
 
@@ -183,7 +214,10 @@ export async function proxy(request: NextRequest) {
 
   if (isPublicOnly) {
     if (session?.authenticated) {
-      return redirectTo(request, resolveRoleLanding(session.role, session.profileComplete));
+      return redirectTo(
+        request,
+        resolveRoleLanding(session.role, session.profileComplete),
+      );
     }
     return NextResponse.next();
   }
@@ -203,12 +237,23 @@ export async function proxy(request: NextRequest) {
       return redirectTo(request, ROUTES.patient.auth);
     }
     if (session.role !== "patient") {
-      return redirectTo(request, resolveRoleLanding(session.role, session.profileComplete));
+      return redirectTo(
+        request,
+        resolveRoleLanding(session.role, session.profileComplete),
+      );
     }
-    if (!session.profileComplete && pathname !== ROUTES.patient.profile && pathname !== "/patient/profile/create") {
+    if (
+      !session.profileComplete &&
+      pathname !== ROUTES.patient.profile &&
+      pathname !== "/patient/profile/create"
+    ) {
       return redirectTo(request, ROUTES.patient.profile);
     }
-    if (session.profileComplete && (pathname === ROUTES.patient.profile || pathname === "/patient/profile/create")) {
+    if (
+      session.profileComplete &&
+      (pathname === ROUTES.patient.profile ||
+        pathname === "/patient/profile/create")
+    ) {
       return redirectTo(request, ROUTES.patient.home);
     }
     return NextResponse.next();
@@ -222,12 +267,23 @@ export async function proxy(request: NextRequest) {
       return redirectTo(request, ROUTES.doctor.auth);
     }
     if (session.role !== "doctor") {
-      return redirectTo(request, resolveRoleLanding(session.role, session.profileComplete));
+      return redirectTo(
+        request,
+        resolveRoleLanding(session.role, session.profileComplete),
+      );
     }
-    if (!session.profileComplete && pathname !== ROUTES.doctor.profile && pathname !== "/doctor/profile/create") {
+    if (
+      !session.profileComplete &&
+      pathname !== ROUTES.doctor.profile &&
+      pathname !== "/doctor/profile/create"
+    ) {
       return redirectTo(request, ROUTES.doctor.profile);
     }
-    if (session.profileComplete && (pathname === ROUTES.doctor.profile || pathname === "/doctor/profile/create")) {
+    if (
+      session.profileComplete &&
+      (pathname === ROUTES.doctor.profile ||
+        pathname === "/doctor/profile/create")
+    ) {
       return redirectTo(request, ROUTES.doctor.home);
     }
     return NextResponse.next();
@@ -261,7 +317,6 @@ export const config = {
     "/patient/video/:path*",
     "/pharmacy/:path*",
     "/records/:path*",
-    "/predict/:path*",
     "/patient/profile/:path*",
     "/patient/complete-profile/:path*",
     "/patient/profile/create/:path*",
