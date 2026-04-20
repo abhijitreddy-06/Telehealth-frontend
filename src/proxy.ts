@@ -101,7 +101,7 @@ async function getSession(
   );
 
   try {
-    const response = await fetch(`${BACKEND_URL}/api/v1/auth/session`, {
+    const response = await fetch(`${BACKEND_URL}/api/auth/session`, {
       method: "GET",
       headers: {
         Accept: "application/json",
